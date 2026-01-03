@@ -1,0 +1,60 @@
+<div class="recent-activity">
+  <div class="activity-header">
+    <h3>{{ 'actividadReciente' | translate }}</h3>
+    <button class="refresh-btn">
+      <i class="pi pi-refresh"></i>
+      {{ 'actualizar' | translate }}
+    </button>
+  </div>
+
+  <div class="activity-table">
+    <table>
+      <thead>
+        <tr>
+          <th>{{ 'fecha' | translate }}</th>
+          <th>{{ 'proveedor' | translate }}</th>
+          <th>{{ 'cliente' | translate }}</th>
+          <th>{{ 'accion' | translate }}</th>
+          <th>{{ 'monto' | translate }}</th>
+          <th>{{ 'estado' | translate }}</th>
+          <th>{{ 'verificacion' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let activity of activities">
+          <td>
+            <span class="date">{{ activity.date }}</span>
+            <span class="time">{{ activity.time }}</span>
+          </td>
+          <td>{{ activity.user }}</td>
+          <td>{{ activity.client || '-' }}</td>
+          <td>{{ activity.action }}</td>
+          <td>
+            <span *ngIf="activity.amount">
+              ${{ activity.amount }} {{ activity.currency }}
+            </span>
+            <span *ngIf="!activity.amount">-</span>
+          </td>
+          <td>
+            <span class="status-badge" [ngClass]="getPaymentStatusClass(activity.paymentStatus)">
+              {{ getPaymentStatusLabel(activity.paymentStatus) }}
+            </span>
+          </td>
+          <td>
+            <span
+              class="status-badge status-icon"
+              [ngClass]="activity.verified ? 'status-completado' : 'status-sin-verificacion'"
+              [attr.aria-label]="activity.verified ? 'Verificado' : 'No verificado'"
+              [attr.title]="activity.verified ? 'Verificado' : 'No verificado'"
+            >
+              <i
+                class="pi"
+                [ngClass]="activity.verified ? 'pi-check-circle' : 'pi-times-circle'"
+              ></i>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
