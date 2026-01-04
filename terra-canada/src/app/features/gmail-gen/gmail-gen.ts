@@ -206,6 +206,51 @@ export class GmailGenComponent implements OnInit {
     });
   }
 
+  /**
+   * Normaliza distintos formatos de fecha a 'YYYY-MM-DD'.
+   * Permite strings, Date o valores provenientes de distintos campos
+   * para no fallar si el backend envía otra clave (ej. fecha_resumen, fecha_creacion).
+   */
+  private normalizeFecha(value: any): string | null {
+    if (!value) {
+      return null;
+    }
+
+    if (value instanceof Date && !Number.isNaN(value.getTime())) {
+      const year = value.getFullYear();
+      const month = String(value.getMonth() + 1).padStart(2, '0');
+      const day = String(value.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    const raw = String(value).trim();
+    if (!raw) {
+      return null;
+    }
+
+    // Toma solo la parte de fecha si viene con hora y reemplaza / por -
+    const datePart = raw.split('T')[0].split(' ')[0].replace(/\//g, '-');
+    const parsed = new Date(datePart);
+
+    if (Number.isNaN(parsed.getTime())) {
+      return null;
+    }
+
+    const year = parsed.getFullYear();
+    const month = String(parsed.getMonth() + 1).padStart(2, '0');
+    const day = String(parsed.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  /** Devuelve la fecha de hoy en formato 'YYYY-MM-DD'. */
+  private getTodayDate(): string {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
   setFilter(filter: 'todos' | 'pasados'): void {
     this.filter = filter;
     this.cdr.markForCheck();
@@ -229,7 +274,35 @@ export class GmailGenComponent implements OnInit {
     }
 
     const proveedorId = this.selectedGroup.id;
-    const fechaResumen = this.selectedGroup.fechaResumen;
+    const firstPago = Array.isArray(this.selectedGroup.pagos)
+      ? (this.selectedGroup.pagos[0] as any)
+      : null;
+
+    // Resolver la fecha con todas las variantes posibles para evitar rechazos por fecha inválida
+    const fechaResumenRaw =
+      this.selectedGroup.fechaResumen ||
+      (this.selectedGroup as any).fecha_resumen ||
+      (this.selectedGroup as any).fecha ||
+      (this.selectedGroup as any).fechaResumen ||
+      firstPago?.fecha_creacion ||
+      firstPago?.fecha ||
+      firstPago?.fecha_resumen;
+
+    const fechaResumen = this.normalizeFecha(fechaResumenRaw) || this.getTodayDate();
+
+    if (!fechaResumen) {
+      // Si no logramos resolver fecha, abortamos para no enviar con datos incompletos
+      this.errorToastMessage =
+        'No se pudo determinar la fecha del resumen de pagos para este proveedor';
+      this.showErrorToast = true;
+      this.cdr.markForCheck();
+      setTimeout(() => {
+        this.showErrorToast = false;
+        this.cdr.markForCheck();
+      }, 3000);
+      return;
+    }
+
     this.isSending = true;
 
     this.gmailGenService
