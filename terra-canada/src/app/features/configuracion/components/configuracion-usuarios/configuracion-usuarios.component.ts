@@ -62,7 +62,8 @@ export class ConfiguracionUsuariosComponent implements OnInit, OnDestroy {
 
   roles = [
     { id: 1, nombre: 'Administrador' },
-    { id: 2, nombre: 'Equipo' }
+    { id: 2, nombre: 'Equipo' },
+    { id: 3, nombre: 'Supervisor' }
   ];
 
   canManageUsers = false;
@@ -438,3 +439,4 @@ export class ConfiguracionUsuariosComponent implements OnInit, OnDestroy {
       });
   }
 }
+
