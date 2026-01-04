@@ -220,8 +220,24 @@
     background: transparent;
     border: none;
     border-radius: 0;
-    overflow: hidden;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
     box-shadow: none;
+    -webkit-overflow-scrolling: touch;
+
+    &::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(45, 122, 122, 0.4);
+      border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.05);
+    }
 
     .records-table {
       width: 100%;
