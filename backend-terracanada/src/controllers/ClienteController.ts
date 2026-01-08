@@ -1,12 +1,15 @@
 import { Request, Response } from 'express';
 import clienteService from '../services/ClienteService';
+import eventoService from '../services/EventoService';
+import { TipoEvento, AccionEvento } from '../models/Evento';
+import { AuthRequest } from '../middleware/authMiddleware';
 import { ApiResponse } from '../types';
 
 export class ClienteController {
   /**
    * Crear nuevo cliente
    */
-  async create(req: Request, res: Response): Promise<void> {
+  async create(req: AuthRequest, res: Response): Promise<void> {
     try {
       const payload = req.body;
 
@@ -20,6 +23,27 @@ export class ClienteController {
 
       if (!result.success) {
         response.error = { message: result.error || 'Error creando cliente' };
+      }
+
+      if (result.success && result.data) {
+        try {
+          const usuarioId = req.user?.id;
+          const cliente: any = result.data as any;
+          const entidadId = cliente?.id ? Number(cliente.id) : undefined;
+
+          await eventoService.registrarEvento({
+            usuario_id: usuarioId,
+            tipo_evento: TipoEvento.ACCION,
+            accion: AccionEvento.CREAR,
+            tipo_entidad: 'CLIENTE',
+            entidad_id: entidadId,
+            descripcion: `Cliente creado: ${cliente?.nombre ?? ''} (id=${entidadId ?? 'N/A'})`,
+            direccion_ip: (req.headers['x-forwarded-for'] as string) || req.ip,
+            agente_usuario: req.headers['user-agent'] as string
+          });
+        } catch (error) {
+          console.error('Error registrando evento de creación de cliente:', error);
+        }
       }
 
       res.status(result.statusCode).json(response);
@@ -96,7 +120,7 @@ export class ClienteController {
   /**
    * Actualizar cliente
    */
-  async update(req: Request, res: Response): Promise<void> {
+  async update(req: AuthRequest, res: Response): Promise<void> {
     try {
       const { id } = req.params;
       const payload = req.body;
@@ -112,6 +136,26 @@ export class ClienteController {
       if (!result.success) {
         response.error = { message: result.error || 'Error actualizando cliente' };
       }
+      if (result.success) {
+        try {
+          const usuarioId = req.user?.id;
+          const entidadId = Number(id);
+          const cliente: any = result.data as any;
+
+          await eventoService.registrarEvento({
+            usuario_id: usuarioId,
+            tipo_evento: TipoEvento.ACCION,
+            accion: AccionEvento.ACTUALIZAR,
+            tipo_entidad: 'CLIENTE',
+            entidad_id: entidadId,
+            descripcion: `Cliente actualizado: ${cliente?.nombre ?? ''} (id=${entidadId})`,
+            direccion_ip: (req.headers['x-forwarded-for'] as string) || req.ip,
+            agente_usuario: req.headers['user-agent'] as string
+          });
+        } catch (error) {
+          console.error('Error registrando evento de actualización de cliente:', error);
+        }
+      }
 
       res.status(result.statusCode).json(response);
     } catch (error) {
@@ -126,7 +170,7 @@ export class ClienteController {
   /**
    * Eliminar cliente (soft delete)
    */
-  async delete(req: Request, res: Response): Promise<void> {
+  async delete(req: AuthRequest, res: Response): Promise<void> {
     try {
       const { id } = req.params;
 
@@ -139,6 +183,25 @@ export class ClienteController {
 
       if (!result.success) {
         response.error = { message: result.error || 'Error eliminando cliente' };
+      }
+      if (result.success) {
+        try {
+          const usuarioId = req.user?.id;
+          const entidadId = Number(id);
+
+          await eventoService.registrarEvento({
+            usuario_id: usuarioId,
+            tipo_evento: TipoEvento.ACCION,
+            accion: AccionEvento.ELIMINAR,
+            tipo_entidad: 'CLIENTE',
+            entidad_id: entidadId,
+            descripcion: `Cliente eliminado (id=${entidadId})`,
+            direccion_ip: (req.headers['x-forwarded-for'] as string) || req.ip,
+            agente_usuario: req.headers['user-agent'] as string
+          });
+        } catch (error) {
+          console.error('Error registrando evento de eliminación de cliente:', error);
+        }
       }
 
       res.status(result.statusCode).json(response);
