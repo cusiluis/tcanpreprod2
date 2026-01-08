@@ -5,6 +5,7 @@ import { PaginatedTableComponent, TableColumn, RowAction, ActionEvent } from '..
 import { PagoBancarioService, PagoBancario } from '../../../../core/services/pago-bancario.service';
 import { PaymentFormComponent } from '../payment-form/payment-form.component';
 import { DatePickerModule } from 'primeng/datepicker';
+import { GmailGenService } from '../../../../core/services/gmail-gen.service';
 
 export interface BancaryPaymentRecord {
   id: number;
@@ -38,6 +39,7 @@ export class BancaryPaymentRecordsComponent implements OnInit {
   filteredRegistros: BancaryPaymentRecord[] = [];
   searchTerm: string = '';
   filterTab: 'todos' | 'pendientes' | 'pagados' = 'todos';
+  private emailSentPagoIds = new Set<number>();
 
   // Confirmación de eliminación
   showConfirmDelete = false;
@@ -138,11 +140,13 @@ export class BancaryPaymentRecordsComponent implements OnInit {
 
   constructor(
     private cdr: ChangeDetectorRef,
-    private pagoBancarioService: PagoBancarioService
+    private pagoBancarioService: PagoBancarioService,
+    private gmailGenService: GmailGenService
   ) {}
 
   ngOnInit(): void {
     this.loadPagoBancarios();
+    this.loadEmailSentStatusFromGmailGen();
   }
 
   /**
@@ -153,8 +157,7 @@ export class BancaryPaymentRecordsComponent implements OnInit {
       next: (response) => {
         if (response.data && Array.isArray(response.data)) {
           this.registros = this.mapPagoBancarioToRecords(response.data);
-          this.applyFilters();
-          this.cdr.markForCheck();
+          this.updateRegistrosEmailStatus();
         }
       },
       error: (error) => {
@@ -180,6 +183,69 @@ export class BancaryPaymentRecordsComponent implements OnInit {
       code: pago.numero_presta,
       enviado_correo: !!pago.enviado_correo
     }));
+  }
+
+  private loadEmailSentStatusFromGmailGen(): void {
+    this.gmailGenService.getHistorialEnvios(500, 0).subscribe({
+      next: (response) => {
+        const ids = new Set<number>();
+
+        if (response && response.data && Array.isArray(response.data)) {
+          response.data.forEach((envio: any) => {
+            if (!envio || envio.estado !== 'ENVIADO') {
+              return;
+            }
+
+            const pagosEnvio = (envio as any).pagos || [];
+            pagosEnvio.forEach((pagoEnvio: any) => {
+              const idPago = pagoEnvio?.id_pago;
+              if (typeof idPago !== 'number') {
+                return;
+              }
+
+              const tipoPago = (pagoEnvio as any).tipo_pago;
+              const codigo = String((pagoEnvio as any).codigo || '').toUpperCase();
+
+              // Para este módulo bancario consideramos solo pagos bancarios
+              if (tipoPago && tipoPago !== 'BANCARIO') {
+                return;
+              }
+
+              // Si no hay tipo_pago explícito, inferir por el código BANCO-
+              if (!tipoPago && !codigo.startsWith('BANCO-')) {
+                return;
+              }
+
+              ids.add(idPago);
+            });
+          });
+        }
+
+        this.emailSentPagoIds = ids;
+        this.updateRegistrosEmailStatus();
+      },
+      error: (error) => {
+        console.error(
+          'BancaryPaymentRecordsComponent - Error cargando historial de envíos de Gmail-GEN:',
+          error
+        );
+      }
+    });
+  }
+
+  private updateRegistrosEmailStatus(): void {
+    if (!this.registros || !Array.isArray(this.registros)) {
+      this.applyFilters();
+      return;
+    }
+
+    this.registros = this.registros.map((registro) => ({
+      ...registro,
+      enviado_correo: this.emailSentPagoIds.has(registro.id)
+    }));
+
+    this.applyFilters();
+    this.cdr.markForCheck();
   }
 
   /**

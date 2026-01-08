@@ -5,9 +5,9 @@
       <thead>
         <tr>
           <th *ngFor="let column of columns" [style.width]="column.width">
-            {{ column.label }}
+            {{ getColumnTranslationKey(column) | translate }}
           </th>
-          <th *ngIf="actions.length > 0" style="width: 120px;">Acciones</th>
+          <th *ngIf="actions.length > 0" style="width: 120px;">{{ 'acciones' | translate }}</th>
         </tr>
       </thead>
       <tbody>
@@ -45,7 +45,7 @@
                 class="action-btn"
                 [ngClass]="action.class"
                 [disabled]="isActionDisabled(action, row)"
-                [title]="action.label"
+                [title]="getActionTranslationKey(action) | translate"
                 (click)="executeAction(action, row)"
               >
                 <i [class]="action.icon"></i>
@@ -59,7 +59,7 @@
     <!-- Empty State -->
     <div *ngIf="data.length === 0" class="empty-state">
       <i class="pi pi-inbox"></i>
-      <p>No hay registros para mostrar</p>
+      <p>{{ 'noData' | translate }}</p>
     </div>
   </div>
 

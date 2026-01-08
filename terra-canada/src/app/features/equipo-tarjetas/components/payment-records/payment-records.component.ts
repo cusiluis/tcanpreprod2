@@ -6,6 +6,7 @@ import { PagoService, PagoDisplay } from '../../../../core/services/pago.service
 import { AuthService } from '../../../../core/services/auth.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { GmailGenService } from '../../../../core/services/gmail-gen.service';
 
 @Component({
   selector: 'app-payment-records',
@@ -26,6 +27,7 @@ export class PaymentRecordsComponent implements OnInit, OnDestroy {
   
   allRecords: PagoDisplay[] = [];
   displayedRecords: PagoDisplay[] = [];
+  private emailSentPagoIds = new Set<number>();
 
   // Estado modal "Contacte a administradores" al intentar eliminar
   showContactAdminModal = false;
@@ -35,7 +37,8 @@ export class PaymentRecordsComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private pagoService: PagoService,
     private authService: AuthService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private gmailGenService: GmailGenService
   ) {}
   
   // Observable para usar con async pipe
@@ -49,6 +52,7 @@ export class PaymentRecordsComponent implements OnInit, OnDestroy {
     this.setupPagosSubscription();
     // Cargar pagos INMEDIATAMENTE después de suscribirse
     this.cargarPagosConUsuario();
+    this.loadEmailSentStatusFromGmailGen();
   }
 
   /**
@@ -89,8 +93,7 @@ export class PaymentRecordsComponent implements OnInit, OnDestroy {
         console.log('PaymentRecordsComponent - Pagos recibidos:', pagos);
         // Clonar arreglo para asegurar detección de cambios con OnPush
         this.allRecords = [...pagos];
-        this.filterRecords();
-        this.cdr.markForCheck();
+        this.updateRecordsEmailStatus();
       });
   }
 
@@ -133,6 +136,68 @@ export class PaymentRecordsComponent implements OnInit, OnDestroy {
 
     // Asignar una nueva referencia para que OnPush detecte el cambio
     this.displayedRecords = [...filtered];
+    this.cdr.markForCheck();
+  }
+
+  private loadEmailSentStatusFromGmailGen(): void {
+    this.gmailGenService.getHistorialEnvios(500, 0).subscribe({
+      next: (response) => {
+        const ids = new Set<number>();
+
+        if (response && response.data && Array.isArray(response.data)) {
+          response.data.forEach((envio: any) => {
+            if (!envio || envio.estado !== 'ENVIADO') {
+              return;
+            }
+
+            const pagosEnvio = (envio as any).pagos || [];
+            pagosEnvio.forEach((pagoEnvio: any) => {
+              const idPago = pagoEnvio?.id_pago;
+              if (typeof idPago !== 'number') {
+                return;
+              }
+
+              const tipoPago = (pagoEnvio as any).tipo_pago;
+              const codigo = String((pagoEnvio as any).codigo || '').toUpperCase();
+
+              // Considerar solo pagos de tarjeta para este módulo
+              if (tipoPago && tipoPago !== 'TARJETA') {
+                return;
+              }
+
+              if (!tipoPago && codigo.startsWith('BANCO-')) {
+                return;
+              }
+
+              ids.add(idPago);
+            });
+          });
+        }
+
+        this.emailSentPagoIds = ids;
+        this.updateRecordsEmailStatus();
+      },
+      error: (error) => {
+        console.error(
+          'PaymentRecordsComponent - Error cargando historial de envíos de Gmail-GEN:',
+          error
+        );
+      }
+    });
+  }
+
+  private updateRecordsEmailStatus(): void {
+    if (!this.allRecords || !Array.isArray(this.allRecords)) {
+      this.filterRecords();
+      return;
+    }
+
+    this.allRecords = this.allRecords.map((record) => ({
+      ...record,
+      enviado_correo: this.emailSentPagoIds.has(record.id)
+    }));
+
+    this.filterRecords();
   }
 
   getStatusClass(status: string | undefined): string {

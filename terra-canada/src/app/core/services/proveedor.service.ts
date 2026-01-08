@@ -125,7 +125,7 @@ export class ProveedorService {
   /**
    * Actualizar proveedor
    */
-  update(id: number, proveedor: Proveedor): Observable<ApiResponse<Proveedor>> {
+  update(id: number, proveedor: Partial<Proveedor>): Observable<ApiResponse<Proveedor>> {
     console.log('ProveedorService.update() - Enviando PUT a:', `${this.apiUrl}/${id}`);
     console.log('Datos:', proveedor);
     

@@ -61,6 +61,29 @@ export class DashboardService {
         translationKey: 'menuGmailGen'
       },
       {
+        id: 'entidades',
+        label: 'Entidades',
+        icon: 'pi pi-address-book',
+        route: '/entidades',
+        translationKey: 'entidades',
+        children: [
+          {
+            id: 'entidades-clientes',
+            label: 'Clientes',
+            icon: 'pi pi-user',
+            route: '/entidades/clientes',
+            translationKey: 'entidadesClientes'
+          },
+          {
+            id: 'entidades-proveedores',
+            label: 'Proveedores',
+            icon: 'pi pi-briefcase',
+            route: '/entidades/proveedores',
+            translationKey: 'entidadesProveedores'
+          }
+        ]
+      },
+      {
         id: 'analisis',
         label: 'Análisis',
         icon: 'pi pi-chart-bar',

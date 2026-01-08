@@ -13,6 +13,9 @@ import { ConfiguracionPerfilComponent } from './features/configuracion/component
 import { ConfiguracionSeguridadComponent } from './features/configuracion/components/configuracion-seguridad/configuracion-seguridad.component';
 import { ConfiguracionUsuariosComponent } from './features/configuracion/components/configuracion-usuarios/configuracion-usuarios.component';
 import { GmailGenComponent } from './features/gmail-gen/gmail-gen';
+import { EntidadesComponent } from './features/entidades/entidades';
+import { EntidadesClientesComponent } from './features/entidades/components/entidades-clientes/entidades-clientes.component';
+import { EntidadesProveedoresComponent } from './features/entidades/components/entidades-proveedores/entidades-proveedores.component';
 import { AuthService } from './core/services/auth.service';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
@@ -132,6 +135,26 @@ export const routes: Routes = [
     path: 'gmail-gen',
     component: GmailGenComponent,
     canActivate: [authGuard, () => roleGuard('gmail-gen')]
+  },
+  {
+    path: 'entidades',
+    component: EntidadesComponent,
+    canActivate: [authGuard, () => roleGuard('entidades')],
+    children: [
+      {
+        path: '',
+        redirectTo: 'clientes',
+        pathMatch: 'full'
+      },
+      {
+        path: 'clientes',
+        component: EntidadesClientesComponent
+      },
+      {
+        path: 'proveedores',
+        component: EntidadesProveedoresComponent
+      }
+    ]
   },
   {
     path: 'eventos',

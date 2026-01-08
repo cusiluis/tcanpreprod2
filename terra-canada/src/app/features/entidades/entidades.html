@@ -1,0 +1,23 @@
+<div class="entidades-layout">
+  <app-notification
+    [notifications]="notifications"
+    (notificationDismissed)="notificationService.dismiss($event)">
+  </app-notification>
+
+  <app-sidebar></app-sidebar>
+
+  <main class="entidades-content">
+    <app-top-header></app-top-header>
+
+    <div class="page-header">
+      <div class="header-left">
+        <h1>{{ 'entidades' | translate }}</h1>
+        <p class="header-subtitle">{{ 'entidadesDescripcion' | translate }}</p>
+      </div>
+    </div>
+
+    <div class="content-container">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

@@ -1,5 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslatePipe } from '../../pipes/translate.pipe';
+import { TranslationKey } from '../../models/translations.model';
 
 /**
  * Interfaz para configurar columnas de la tabla
@@ -7,6 +9,7 @@ import { CommonModule } from '@angular/common';
 export interface TableColumn {
   key: string;
   label: string;
+  translationKey?: TranslationKey;
   type?: 'text' | 'date' | 'currency' | 'badge' | 'custom';
   width?: string;
   sortable?: boolean;
@@ -20,6 +23,7 @@ export interface TableColumn {
 export interface RowAction {
   id: string;
   label: string;
+  translationKey?: TranslationKey;
   icon: string;
   class: string;
   disabled?: (row: any) => boolean;
@@ -36,7 +40,7 @@ export interface ActionEvent {
 @Component({
   selector: 'app-paginated-table',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './paginated-table.component.html',
   styleUrl: './paginated-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -222,5 +226,19 @@ export class PaginatedTableComponent implements OnInit {
    */
   isActionDisabled(action: RowAction, row: any): boolean {
     return action.disabled ? action.disabled(row) : false;
+  }
+
+  /**
+   * Obtiene la clave de traducción para una columna
+   */
+  getColumnTranslationKey(column: TableColumn): TranslationKey {
+    return (column.translationKey ?? (column.label as TranslationKey));
+  }
+
+  /**
+   * Obtiene la clave de traducción para una acción
+   */
+  getActionTranslationKey(action: RowAction): TranslationKey {
+    return (action.translationKey ?? (action.label as TranslationKey));
   }
 }

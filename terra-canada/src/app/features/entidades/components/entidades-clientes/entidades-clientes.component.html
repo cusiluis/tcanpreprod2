@@ -1,0 +1,213 @@
+<div class="entidades-section">
+  <div class="section-header">
+    <div class="section-title">
+      <h3>{{ 'entidadesClientes' | translate }}</h3>
+      <p class="section-subtitle">{{ 'clientesPaxsSubtitulo' | translate }}</p>
+    </div>
+    <button
+      *ngIf="canCreateOrEdit()"
+      type="button"
+      class="btn-primary"
+      (click)="openCreateModal()"
+    >
+      <i class="pi pi-plus"></i>
+      {{ 'nuevo' | translate }} {{ 'cliente' | translate }}
+    </button>
+  </div>
+
+  <div class="search-container">
+    <div class="search-input-wrapper">
+      <i class="pi pi-search"></i>
+      <input
+        type="text"
+        class="search-input"
+        [placeholder]="'buscarClientesPlaceholder' | translate"
+        [(ngModel)]="searchTerm"
+        (input)="onSearchChange()"
+      />
+    </div>
+  </div>
+
+  <div class="table-wrapper-entidades" *ngIf="!isLoading && !errorMessage">
+    <app-paginated-table
+      [data]="filteredClientes"
+      [columns]="columns"
+      [actions]="actions"
+      [itemsPerPage]="10"
+      [maxHeight]="'520px'"
+      [showPaginationInfo]="true"
+      (onAction)="onTableAction($event)"
+    ></app-paginated-table>
+  </div>
+
+  <div class="loading" *ngIf="isLoading">
+    <i class="pi pi-spinner pi-spin"></i>
+    <span>{{ 'cargandoClientes' | translate }}</span>
+  </div>
+
+  <div class="error-message" *ngIf="errorMessage">
+    <i class="pi pi-exclamation-triangle"></i>
+    <span>{{ errorMessage }}</span>
+  </div>
+
+  <!-- Modal Crear Cliente -->
+  <div class="mini-modal-overlay" *ngIf="showCreateModal">
+    <div class="mini-modal-content" (click)="$event.stopPropagation()">
+      <div class="mini-modal-header">
+        <h3>{{ 'nuevo' | translate }} {{ 'cliente' | translate }}</h3>
+        <button class="btn-close" type="button" (click)="closeCreateModal()">
+          <i class="pi pi-times"></i>
+        </button>
+      </div>
+      <div class="mini-modal-body">
+        <form [formGroup]="createForm">
+          <div class="form-group">
+            <label>{{ 'nombre' | translate }} *</label>
+            <input type="text" class="form-control" formControlName="nombre" />
+          </div>
+          <div class="form-group">
+            <label>{{ 'ubicacion' | translate }}</label>
+            <input type="text" class="form-control" formControlName="ubicacion" />
+          </div>
+          <div class="form-group">
+            <label>{{ 'telefono' | translate }}</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="telefono"
+              (input)="onTelefonoInput('create', 'telefono', $event)"
+            />
+          </div>
+          <div class="form-group">
+            <label>{{ 'correo' | translate }} *</label>
+            <input type="email" class="form-control" formControlName="correo" />
+          </div>
+        </form>
+      </div>
+      <div class="mini-modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeCreateModal()">
+          {{ 'cancelar' | translate }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          [disabled]="createForm.invalid"
+          (click)="submitCreate()"
+        >
+          <i class="pi pi-check"></i>
+          {{ 'guardar' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Editar Cliente -->
+  <div class="mini-modal-overlay" *ngIf="showEditModal">
+    <div class="mini-modal-content" (click)="$event.stopPropagation()">
+      <div class="mini-modal-header">
+        <h3>{{ 'editar' | translate }} {{ 'cliente' | translate }}</h3>
+        <button class="btn-close" type="button" (click)="closeEditModal()">
+          <i class="pi pi-times"></i>
+        </button>
+      </div>
+      <div class="mini-modal-body">
+        <form [formGroup]="editForm">
+          <div class="form-group">
+            <label>{{ 'nombre' | translate }} *</label>
+            <input type="text" class="form-control" formControlName="nombre" />
+          </div>
+          <div class="form-group">
+            <label>{{ 'ubicacion' | translate }}</label>
+            <input type="text" class="form-control" formControlName="ubicacion" />
+          </div>
+          <div class="form-group">
+            <label>{{ 'telefono' | translate }}</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="telefono"
+              (input)="onTelefonoInput('edit', 'telefono', $event)"
+            />
+          </div>
+          <div class="form-group">
+            <label>{{ 'correo' | translate }} *</label>
+            <input type="email" class="form-control" formControlName="correo" />
+          </div>
+        </form>
+      </div>
+      <div class="mini-modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeEditModal()">
+          {{ 'cancelar' | translate }}
+        </button>
+        <button type="button" class="btn btn-primary" [disabled]="!editForm.valid" (click)="submitEdit()">
+          <i class="pi pi-check"></i>
+          {{ 'guardarCambios' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Ver Cliente -->
+  <div class="mini-modal-overlay" *ngIf="showViewModal && selectedCliente">
+    <div class="mini-modal-content" (click)="$event.stopPropagation()">
+      <div class="mini-modal-header">
+        <h3>{{ 'detalles' | translate }} {{ 'cliente' | translate }}</h3>
+        <button class="btn-close" type="button" (click)="closeViewModal()">
+          <i class="pi pi-times"></i>
+        </button>
+      </div>
+      <div class="mini-modal-body">
+        <div class="detail-row">
+          <span class="detail-label">{{ 'nombre' | translate }}:</span>
+          <span class="detail-value">{{ selectedCliente?.nombre }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">{{ 'ubicacion' | translate }}:</span>
+          <span class="detail-value">{{ selectedCliente?.ubicacion || 'N/A' }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">{{ 'telefono' | translate }}:</span>
+          <span class="detail-value">{{ selectedCliente?.telefono || 'N/A' }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">{{ 'correo' | translate }}:</span>
+          <span class="detail-value">{{ selectedCliente?.correo || 'N/A' }}</span>
+        </div>
+      </div>
+      <div class="mini-modal-footer">
+        <button type="button" class="btn btn-primary" (click)="closeViewModal()">
+          <i class="pi pi-check"></i>
+          {{ 'cerrar' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Confirmar Eliminación -->
+  <div class="mini-modal-overlay" *ngIf="showDeleteConfirm && clienteAEliminar">
+    <div class="mini-modal-content" (click)="$event.stopPropagation()">
+      <div class="mini-modal-header">
+        <h3>{{ 'eliminar' | translate }} {{ 'cliente' | translate }}</h3>
+        <button class="btn-close" type="button" (click)="closeDeleteConfirm()">
+          <i class="pi pi-times"></i>
+        </button>
+      </div>
+      <div class="mini-modal-body">
+        <p>
+          {{ 'confirmarEliminarCliente' | translate }}
+          <strong>{{ clienteAEliminar?.nombre }}</strong>?
+        </p>
+        <p class="mini-modal-warning">{{ 'accionNoSePuedeDeshacer' | translate }}</p>
+      </div>
+      <div class="mini-modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeDeleteConfirm()">
+          {{ 'cancelar' | translate }}
+        </button>
+        <button type="button" class="btn btn-primary" (click)="confirmDelete()">
+          <i class="pi pi-trash"></i>
+          {{ 'eliminar' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

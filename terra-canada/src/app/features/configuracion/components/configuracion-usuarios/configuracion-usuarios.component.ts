@@ -439,4 +439,3 @@ export class ConfiguracionUsuariosComponent implements OnInit, OnDestroy {
       });
   }
 }
-

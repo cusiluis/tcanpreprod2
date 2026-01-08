@@ -289,7 +289,8 @@ export class AuthService {
         moduleName.toLowerCase() === 'documentos' ||
         moduleName.toLowerCase() === 'eventos' ||
         moduleName.toLowerCase() === 'configuracion' ||
-        moduleName.toLowerCase() === 'gmail-gen'
+        moduleName.toLowerCase() === 'gmail-gen' ||
+        moduleName.toLowerCase() === 'entidades'
       );
     }
 
@@ -304,7 +305,8 @@ export class AuthService {
         module === 'eventos' ||
         module === 'configuracion' ||
         module === 'gmail-gen' ||
-        module === 'analisis'
+        module === 'analisis' ||
+        module === 'entidades'
       );
     }
 
@@ -319,17 +321,17 @@ export class AuthService {
     if (!user) return [];
 
     if (user.rol_nombre?.toLowerCase() === 'administrador') {
-      return ['dashboard', 'tarjetas', 'financieros-tarjetas', 'pagos', 'clientes', 'proveedores', 'eventos', 'configuracion', 'gmail-gen'];
+      return ['dashboard', 'tarjetas', 'financieros-tarjetas', 'pagos', 'clientes', 'proveedores', 'eventos', 'configuracion', 'gmail-gen', 'entidades'];
     }
 
     if (user.rol_nombre?.toLowerCase() === 'supervisor') {
-      return ['dashboard', 'financieros', 'financieros-tarjetas', 'tarjetas', 'documentos', 'eventos', 'configuracion', 'gmail-gen', 'analisis'];
+      return ['dashboard', 'financieros', 'financieros-tarjetas', 'tarjetas', 'documentos', 'eventos', 'configuracion', 'gmail-gen', 'analisis', 'entidades'];
     }
 
     if (user.rol_nombre?.toLowerCase() === 'equipo') {
       // Para rol Equipo, el módulo inicial y principal es "equipo-tarjetas";
       // no se expone "dashboard" como módulo accesible.
-      return ['equipo-tarjetas', 'tarjetas', 'documentos', 'eventos', 'configuracion', 'gmail-gen'];
+      return ['equipo-tarjetas', 'tarjetas', 'documentos', 'eventos', 'configuracion', 'gmail-gen', 'entidades'];
     }
 
     return [];

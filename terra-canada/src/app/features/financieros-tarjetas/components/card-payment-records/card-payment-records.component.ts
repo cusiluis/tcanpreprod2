@@ -8,6 +8,7 @@ import { PaginatedTableComponent, TableColumn, RowAction, ActionEvent } from '..
 import { DatePickerModule } from 'primeng/datepicker';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { GmailGenService } from '../../../../core/services/gmail-gen.service';
 
 @Component({
   selector: 'app-card-payment-records',
@@ -129,6 +130,7 @@ export class CardPaymentRecordsComponent implements OnInit, OnDestroy {
   ];
 
   private destroy$ = new Subject<void>();
+  private emailSentPagoIds = new Set<number>();
 
   @Output() onEdit = new EventEmitter<any>();
   @Output() onView = new EventEmitter<any>();
@@ -137,13 +139,15 @@ export class CardPaymentRecordsComponent implements OnInit, OnDestroy {
     private pagoService: PagoService,
     private notificationService: NotificationService,
     private authService: AuthService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private gmailGenService: GmailGenService
   ) {}
 
   ngOnInit(): void {
     this.isLoading = true;
     this.setupPagosSubscription();
     this.pagoService.cargarPagos();
+    this.loadEmailSentStatusFromGmailGen();
   }
 
   private setupPagosSubscription(): void {
@@ -154,9 +158,8 @@ export class CardPaymentRecordsComponent implements OnInit, OnDestroy {
         (pagos: any[]) => {
           console.log('CardPaymentRecordsComponent - Pagos recibidos:', pagos);
           this.pagos = pagos;
-          this.applyFilters();
+          this.updatePagosEmailStatus();
           this.isLoading = false;
-          this.cdr.markForCheck();
         },
         (error: any) => {
           console.error('Error cargando pagos:', error);
@@ -165,6 +168,52 @@ export class CardPaymentRecordsComponent implements OnInit, OnDestroy {
           this.cdr.markForCheck();
         }
       );
+  }
+
+  private loadEmailSentStatusFromGmailGen(): void {
+    this.gmailGenService.getHistorialEnvios(500, 0).subscribe({
+      next: (response) => {
+        const ids = new Set<number>();
+
+        if (response && response.data && Array.isArray(response.data)) {
+          response.data.forEach((envio: any) => {
+            if (!envio || envio.estado !== 'ENVIADO') {
+              return;
+            }
+
+            const pagosEnvio = (envio as any).pagos || [];
+            pagosEnvio.forEach((pagoEnvio: any) => {
+              const idPago = pagoEnvio?.id_pago;
+              if (typeof idPago !== 'number') {
+                return;
+              }
+
+              const tipoPago = (pagoEnvio as any).tipo_pago;
+              const codigo = String((pagoEnvio as any).codigo || '').toUpperCase();
+
+              if (tipoPago && tipoPago !== 'TARJETA') {
+                return;
+              }
+
+              if (!tipoPago && codigo.startsWith('BANCO-')) {
+                return;
+              }
+
+              ids.add(idPago);
+            });
+          });
+        }
+
+        this.emailSentPagoIds = ids;
+        this.updatePagosEmailStatus();
+      },
+      error: (error) => {
+        console.error(
+          'CardPaymentRecordsComponent - Error cargando historial de envíos de Gmail-GEN:',
+          error
+        );
+      }
+    });
   }
 
   /**
@@ -259,8 +308,29 @@ export class CardPaymentRecordsComponent implements OnInit, OnDestroy {
       );
     }
 
+    // Filtro por pestaña (todos, pendientes, pagados)
+    if (this.filterTab === 'pendientes') {
+      data = data.filter(r => r.estado === 'A PAGAR');
+    } else if (this.filterTab === 'pagados') {
+      data = data.filter(r => r.estado === 'PAGADO');
+    }
+
     this.filteredPagos = data;
     this.cdr.markForCheck();
+  }
+
+  private updatePagosEmailStatus(): void {
+    if (!this.pagos || !Array.isArray(this.pagos)) {
+      this.applyFilters();
+      return;
+    }
+
+    this.pagos = this.pagos.map((pago) => ({
+      ...pago,
+      enviado_correo: this.emailSentPagoIds.has(pago.id)
+    }));
+
+    this.applyFilters();
   }
 
   onDateChange(value: any): void {

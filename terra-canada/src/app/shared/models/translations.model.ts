@@ -232,7 +232,28 @@ export const TRANSLATIONS = {
     // AI Chat
     aiChatTitle: 'Asistente Terra',
     aiChatPlaceholder: 'Escribe tu mensaje...',
-    aiChatFooter: 'Powered by Terra Canada'
+    aiChatFooter: 'Powered by Terra Canada',
+    // Entidades module
+    entidades: 'Entidades',
+    entidadesClientes: 'Clientes',
+    entidadesProveedores: 'Proveedores',
+    entidadesDescripcion: 'Gestión de clientes (Paxs) y proveedores',
+    clientesPaxsSubtitulo: 'Listado de clientes registrados en el sistema',
+    proveedoresSubtitulo: 'Listado de proveedores registrados en el sistema',
+    buscarClientesPlaceholder: 'Buscar por nombre, correo, teléfono o ubicación',
+    buscarProveedoresPlaceholder: 'Buscar por nombre, servicio, teléfono o correo',
+    cargandoClientes: 'Cargando clientes...',
+    cargandoProveedores: 'Cargando proveedores...',
+    ubicacion: 'Ubicación',
+    correo: 'Correo',
+    telefono2: 'Teléfono 2',
+    correo2: 'Correo 2',
+    telefonos: 'Teléfonos',
+    correos: 'Correos',
+    cerrar: 'Cerrar',
+    confirmarEliminarCliente: '¿Estás seguro de que deseas eliminar al cliente',
+    confirmarEliminarProveedor: '¿Estás seguro de que deseas eliminar al proveedor',
+    accionNoSePuedeDeshacer: 'Esta acción no se puede deshacer.'
   },
   en: {
     search: 'Global search...',
@@ -467,7 +488,28 @@ export const TRANSLATIONS = {
     // AI Chat
     aiChatTitle: 'Terra Assistant',
     aiChatPlaceholder: 'Type your message...',
-    aiChatFooter: 'Powered by Terra Canada'
+    aiChatFooter: 'Powered by Terra Canada',
+    // Entidades module
+    entidades: 'Entities',
+    entidadesClientes: 'Clients',
+    entidadesProveedores: 'Suppliers',
+    entidadesDescripcion: 'Management of clients (paxs) and suppliers',
+    clientesPaxsSubtitulo: 'List of clients registered in the system',
+    proveedoresSubtitulo: 'List of suppliers registered in the system',
+    buscarClientesPlaceholder: 'Search by name, email, phone or location',
+    buscarProveedoresPlaceholder: 'Search by name, service, phone or email',
+    cargandoClientes: 'Loading clients...',
+    cargandoProveedores: 'Loading suppliers...',
+    ubicacion: 'Location',
+    correo: 'Email',
+    telefono2: 'Phone 2',
+    correo2: 'Email 2',
+    telefonos: 'Phones',
+    correos: 'Emails',
+    cerrar: 'Close',
+    confirmarEliminarCliente: 'Are you sure you want to delete client',
+    confirmarEliminarProveedor: 'Are you sure you want to delete supplier',
+    accionNoSePuedeDeshacer: 'This action cannot be undone.'
   },
   fr: {
     search: 'Recherche globale...',
@@ -702,7 +744,28 @@ export const TRANSLATIONS = {
     // AI Chat
     aiChatTitle: 'Assistant Terra',
     aiChatPlaceholder: 'Écrivez votre message...',
-    aiChatFooter: 'Powered by Terra Canada'
+    aiChatFooter: 'Powered by Terra Canada',
+    // Entités module
+    entidades: 'Entités',
+    entidadesClientes: 'Clients',
+    entidadesProveedores: 'Fournisseurs',
+    entidadesDescripcion: 'Gestion des clients (paxs) et des fournisseurs',
+    clientesPaxsSubtitulo: 'Liste des clients enregistrés dans le système',
+    proveedoresSubtitulo: 'Liste des fournisseurs enregistrés dans le système',
+    buscarClientesPlaceholder: 'Rechercher par nom, email, téléphone ou localisation',
+    buscarProveedoresPlaceholder: 'Rechercher par nom, service, téléphone ou email',
+    cargandoClientes: 'Chargement des clients...',
+    cargandoProveedores: 'Chargement des fournisseurs...',
+    ubicacion: 'Localisation',
+    correo: 'Email',
+    telefono2: 'Téléphone 2',
+    correo2: 'Email 2',
+    telefonos: 'Téléphones',
+    correos: 'E-mails',
+    cerrar: 'Fermer',
+    confirmarEliminarCliente: 'Êtes-vous sûr de vouloir supprimer le client',
+    confirmarEliminarProveedor: 'Êtes-vous sûr de vouloir supprimer le fournisseur',
+    accionNoSePuedeDeshacer: 'Cette action est irréversible.'
   }
 };
 
