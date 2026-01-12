@@ -4,7 +4,7 @@
     <div class="toast-content">
       <i class="pi pi-check-circle"></i>
       <div class="toast-text">
-        <h4>¡Éxito!</h4>
+        <h4>{{ 'exito' | translate }}!</h4>
         <p>{{ successToastMessage }}</p>
       </div>
     </div>
@@ -14,19 +14,19 @@
     
     <!-- SECCIÓN 1: PARTES INVOLUCRADAS -->
     <div class="form-section">
-      <h4 class="section-title">Partes Involucradas</h4>
+      <h4 class="section-title">{{ 'partesInvolucradas' | translate }}</h4>
       
       <div class="form-row">
         <!-- Cliente Field with Autocomplete Combobox -->
         <div class="form-group">
-          <label>Cliente *</label>
+          <label>{{ 'cliente' | translate }} *</label>
           <div class="combobox-wrapper">
             <div class="combobox-input-container">
               <input
                 type="text"
                 formControlName="clienteNombre"
                 class="form-control combobox-input"
-                placeholder="Escribe para buscar cliente..."
+                [placeholder]="'buscarClientePlaceholder' | translate"
                 (focus)="onClienteFocus()"
                 (blur)="onClienteBlur()"
                 (input)="onClienteSearch($event)"
@@ -42,7 +42,7 @@
                 <!-- Opción para crear nuevo cliente (al inicio para mejor UX) -->
                 <div class="combobox-item combobox-item-add" (click)="abrirModalNuevoCliente()">
                   <i class="pi pi-plus"></i>
-                  <span>Agregar nuevo cliente</span>
+                  <span>{{ 'agregarNuevoCliente' | translate }}</span>
                 </div>
                 <div class="combobox-divider" *ngIf="filteredClientes.length > 0"></div>
 
@@ -59,20 +59,20 @@
             </div>
           </div>
           <div class="form-error" *ngIf="paymentForm.get('clienteId')?.invalid && paymentForm.get('clienteId')?.touched">
-            Cliente es requerido
+            {{ 'clienteRequerido' | translate }}
           </div>
         </div>
 
         <!-- Proveedor Field with Autocomplete Combobox -->
         <div class="form-group">
-          <label>Proveedor *</label>
+          <label>{{ 'proveedor' | translate }} *</label>
           <div class="combobox-wrapper">
             <div class="combobox-input-container">
               <input
                 type="text"
                 formControlName="proveedorNombre"
                 class="form-control combobox-input"
-                placeholder="Escribe para buscar proveedor..."
+                [placeholder]="'buscarProveedorPlaceholder' | translate"
                 (focus)="onProveedorFocus()"
                 (blur)="onProveedorBlur()"
                 (input)="onProveedorSearch($event)"
@@ -88,7 +88,7 @@
                 <!-- Opción para crear nuevo proveedor (al inicio para mejor UX) -->
                 <div class="combobox-item combobox-item-add" (click)="abrirModalNuevoProveedor()">
                   <i class="pi pi-plus"></i>
-                  <span>Agregar nuevo proveedor</span>
+                  <span>{{ 'agregarNuevoProveedor' | translate }}</span>
                 </div>
                 <div class="combobox-divider" *ngIf="filteredProveedores.length > 0"></div>
 
@@ -108,19 +108,19 @@
             </div>
           </div>
           <div class="form-error" *ngIf="paymentForm.get('proveedorId')?.invalid && paymentForm.get('proveedorId')?.touched">
-            Proveedor es requerido
+            {{ 'proveedorRequerido' | translate }}
           </div>
         </div>
       </div>
 
       <!-- Correo Field (Auto-filled from Proveedor) -->
       <div class="form-group form-group-full">
-        <label>Correo</label>
+        <label>{{ 'correo' | translate }}</label>
         <input
           type="email"
           formControlName="correo"
           class="form-control"
-          placeholder="Correo del proveedor"
+          [placeholder]="'correoProveedorPlaceholder' | translate"
           readonly
         />
       </div>
@@ -128,44 +128,44 @@
 
     <!-- SECCIÓN 2: INFORMACIÓN DEL PAGO -->
     <div class="form-section">
-      <h4 class="section-title">Información del Pago</h4>
+      <h4 class="section-title">{{ 'informacionPago' | translate }}</h4>
 
       <div class="form-row">
         <!-- Moneda Selection Field -->
         <div class="form-group">
-          <label>Moneda *</label>
+          <label>{{ 'monedaLabel' | translate }} *</label>
           <select formControlName="tipoMoneda" class="form-control" (change)="onMonedaChange()">
-            <option value="">Seleccione moneda...</option>
+            <option value="">{{ 'seleccioneMoneda' | translate }}</option>
             <option *ngFor="let moneda of tiposMoneda" [value]="moneda.id">
               {{ moneda.codigo }} - {{ moneda.nombre }}
             </option>
           </select>
           <div class="form-error" *ngIf="paymentForm.get('tipoMoneda')?.invalid && paymentForm.get('tipoMoneda')?.touched">
-            Moneda es requerida
+            {{ 'monedaRequerida' | translate }}
           </div>
         </div>
 
         <!-- Cuenta Bancaria Field (Filtered by Currency) -->
         <div class="form-group">
-          <label>Cuenta Bancaria *</label>
+          <label>{{ 'cuentaBancaria' | translate }} *</label>
           <select formControlName="cuentaBancariaId" class="form-control" [disabled]="!monedaSeleccionada">
-            <option value="">{{ monedaSeleccionada ? 'Seleccione cuenta...' : 'Seleccione moneda primero' }}</option>
+            <option value="">{{ monedaSeleccionada ? ('seleccioneCuenta' | translate) : ('seleccioneMonedaPrimero' | translate) }}</option>
             <option *ngFor="let cuenta of cuentasBancariasFiltradas" [value]="cuenta.id">
               {{ cuenta.nombre_banco }} - ****{{ cuenta.numero_cuenta.slice(-4) }}
             </option>
           </select>
           <div class="form-error" *ngIf="paymentForm.get('cuentaBancariaId')?.invalid && paymentForm.get('cuentaBancariaId')?.touched">
-            Cuenta Bancaria es requerida
+            {{ 'cuentaBancariaRequerida' | translate }}
           </div>
           <!-- Mostrar saldo disponible -->
           <small class="saldo-info" *ngIf="getCuentaBancariaInfo()">
-            Saldo Disponible: {{ getCuentaBancariaInfo()?.saldo | currency }}
+            {{ 'saldoDisponible' | translate }}: {{ getCuentaBancariaInfo()?.saldo | currency }}
           </small>
         </div>
 
         <!-- Monto Field -->
         <div class="form-group">
-          <label>Monto *</label>
+          <label>{{ 'monto' | translate }} *</label>
           <input
             type="number"
             formControlName="monto"
@@ -175,7 +175,7 @@
             min="0"
           />
           <div class="form-error" *ngIf="paymentForm.get('monto')?.invalid && paymentForm.get('monto')?.touched">
-            Monto válido es requerido
+            {{ 'montoValidoRequerido' | translate }}
           </div>
         </div>
       </div>
@@ -183,7 +183,7 @@
       <!-- N° Présta Field (Manual, Alfanumérico) -->
       <div class="form-group form-group-full">
         <div class="numero-presta-header">
-          <label>N° Présta (Alfanumérico) *</label>
+          <label>{{ 'numeroPresta' | translate }} ({{ 'alfanumerico' | translate }}) *</label>
           <div class="numero-presta-toggle">
             <label class="toggle-option">
               <input
@@ -192,7 +192,7 @@
                 [checked]="!numeroPrestaAutomatico"
                 (change)="setNumeroPrestaModo(false)"
               />
-              <span>Manual</span>
+              <span>{{ 'manual' | translate }}</span>
             </label>
             <label class="toggle-option">
               <input
@@ -201,7 +201,7 @@
                 [checked]="numeroPrestaAutomatico"
                 (change)="setNumeroPrestaModo(true)"
               />
-              <span>Automático</span>
+              <span>{{ 'automatico' | translate }}</span>
             </label>
           </div>
         </div>
@@ -214,10 +214,10 @@
         />
         <small class="form-hint" *ngIf="!numeroPrestaAutomatico">Número único proporcionado por el banco</small>
         <small class="form-hint" *ngIf="numeroPrestaAutomatico">
-          Se generará automáticamente con el formato BANCO-{{ currentYear }}-ID
+          {{ 'formatoBanco' | translate }}{{ currentYear }}-ID
         </small>
         <div class="form-error" *ngIf="paymentForm.get('numeroPresta')?.invalid && paymentForm.get('numeroPresta')?.touched && !numeroPrestaAutomatico">
-          N° Présta es requerido
+          {{ 'numeroPrestaRequerido' | translate }}
         </div>
         <div class="form-error" *ngIf="numeroPrestaError">
           {{ numeroPrestaError }}
@@ -227,15 +227,15 @@
 
     <!-- SECCIÓN 3: NOTAS -->
     <div class="form-section">
-      <h4 class="section-title">Notas Adicionales</h4>
+      <h4 class="section-title">{{ 'notasAdicionales' | translate }}</h4>
 
       <!-- Comentarios Field -->
       <div class="form-group form-group-full">
-        <label>Comentarios</label>
+        <label>{{ 'comentarios' | translate }}</label>
         <textarea
           formControlName="comentarios"
           class="form-control notes-textarea"
-          placeholder="Comentarios adicionales del pago..."
+          [placeholder]="'comentariosPagoPlaceholder' | translate"
           rows="3"
         ></textarea>
       </div>
@@ -245,12 +245,12 @@
     <div class="form-actions">
       <button type="button" class="btn btn-secondary" (click)="onCancelForm()" [disabled]="isSubmitting">
         <i class="pi pi-times"></i>
-        Cancelar
+        {{ 'cancelar' | translate }}
       </button>
       <button type="submit" class="btn btn-primary" [disabled]="!paymentForm.valid || isSubmitting">
         <i class="pi pi-check" *ngIf="!isSubmitting"></i>
         <i class="pi pi-spinner pi-spin" *ngIf="isSubmitting"></i>
-        {{ isSubmitting ? 'Guardando...' : 'Registrar Pago' }}
+        {{ isSubmitting ? ('guardando' | translate) : ('registrarPago' | translate) }}
       </button>
     </div>
   </form>
@@ -259,56 +259,56 @@
   <div class="mini-modal-overlay" *ngIf="mostrarModalNuevoCliente">
     <div class="mini-modal-content" (click)="$event.stopPropagation()">
       <div class="mini-modal-header">
-        <h3>Agregar Nuevo Cliente</h3>
+        <h3>{{ 'agregarNuevoCliente' | translate }}</h3>
         <button class="btn-close" (click)="cerrarModalNuevoCliente()">
           <i class="pi pi-times"></i>
         </button>
       </div>
       <div class="mini-modal-body">
         <div class="form-group">
-          <label>Nombre *</label>
+          <label>{{ 'nombre' | translate }} *</label>
           <input
             type="text"
             [(ngModel)]="nuevoClienteNombre"
             class="form-control"
-            placeholder="Nombre del cliente"
+            [placeholder]="'nombreClientePlaceholder' | translate"
           />
         </div>
         <div class="form-group">
-          <label>Ubicación</label>
+          <label>{{ 'ubicacion' | translate }}</label>
           <input
             type="text"
             [(ngModel)]="nuevoClienteUbicacion"
             class="form-control"
-            placeholder="Ciudad, país"
+            [placeholder]="'ubicacionPlaceholder' | translate"
           />
         </div>
         <div class="form-group">
-          <label>Teléfono</label>
+          <label>{{ 'telefono' | translate }}</label>
           <input
             type="tel"
             [(ngModel)]="nuevoClienteTelefono"
             class="form-control"
-            placeholder="+57 300 123 4567"
+            [placeholder]="'telefonoPlaceholder' | translate"
           />
         </div>
         <div class="form-group">
-          <label>Correo</label>
+          <label>{{ 'correo' | translate }}</label>
           <input
             type="email"
             [(ngModel)]="nuevoClienteCorreo"
             class="form-control"
-            placeholder="cliente@email.com"
+            [placeholder]="'correoPlaceholder' | translate"
           />
         </div>
       </div>
       <div class="mini-modal-footer">
         <button type="button" class="btn btn-secondary" (click)="cerrarModalNuevoCliente()">
-          Cancelar
+          {{ 'cancelar' | translate }}
         </button>
         <button type="button" class="btn btn-primary" (click)="guardarNuevoCliente()">
           <i class="pi pi-check"></i>
-          Guardar
+          {{ 'guardar' | translate }}
         </button>
       </div>
     </div>
@@ -318,83 +318,83 @@
   <div class="mini-modal-overlay" *ngIf="mostrarModalNuevoProveedor">
     <div class="mini-modal-content" (click)="$event.stopPropagation()">
       <div class="mini-modal-header">
-        <h3>Agregar Nuevo Proveedor</h3>
+        <h3>{{ 'agregarNuevoProveedor' | translate }}</h3>
         <button class="btn-close" (click)="cerrarModalNuevoProveedor()">
           <i class="pi pi-times"></i>
         </button>
       </div>
       <div class="mini-modal-body">
         <div class="form-group">
-          <label>Nombre *</label>
+          <label>{{ 'nombre' | translate }} *</label>
           <input
             type="text"
             [(ngModel)]="nuevoProveedorNombre"
             class="form-control"
-            placeholder="Nombre del proveedor"
+            [placeholder]="'nombreProveedorPlaceholder' | translate"
           />
         </div>
         <div class="form-group">
-          <label>Servicio *</label>
+          <label>{{ 'servicio' | translate }} *</label>
           <input
             type="text"
             [(ngModel)]="nuevoProveedorServicio"
             class="form-control"
-            placeholder="Tipo de servicio"
+            [placeholder]="'servicioProveedorPlaceholder' | translate"
           />
         </div>
         <div class="form-group">
-          <label>Teléfono</label>
+          <label>{{ 'telefono' | translate }}</label>
           <input
             type="tel"
             [(ngModel)]="nuevoProveedorTelefono"
             class="form-control"
-            placeholder="+57 300 123 4567"
+            [placeholder]="'telefonoProveedorPlaceholder' | translate"
           />
         </div>
         <div class="form-group">
-          <label>Teléfono 2</label>
+          <label>{{ 'telefono2' | translate }}</label>
           <input
             type="tel"
             [(ngModel)]="nuevoProveedorTelefono2"
             class="form-control"
-            placeholder="+57 300 987 6543"
+            [placeholder]="'telefono2ProveedorPlaceholder' | translate"
           />
         </div>
         <div class="form-group">
-          <label>Correo</label>
+          <label>{{ 'correo' | translate }}</label>
           <input
             type="email"
             [(ngModel)]="nuevoProveedorCorreo"
             class="form-control"
-            placeholder="proveedor@email.com"
+            [placeholder]="'correoProveedorPlaceholder' | translate"
           />
         </div>
         <div class="form-group">
-          <label>Correo 2</label>
+          <label>{{ 'correo2' | translate }}</label>
           <input
             type="email"
             [(ngModel)]="nuevoProveedorCorreo2"
             class="form-control"
-            placeholder="contacto@email.com"
+            [placeholder]="'correo2ProveedorPlaceholder' | translate"
           />
         </div>
         <div class="form-group">
-          <label>Descripción</label>
+          <label>{{ 'descripcion' | translate }}</label>
           <textarea
             [(ngModel)]="nuevoProveedorDescripcion"
             class="form-control"
-            placeholder="Descripción del proveedor..."
+            [placeholder]="'descripcionProveedorPlaceholder' | translate"
             rows="3"
           ></textarea>
         </div>
       </div>
       <div class="mini-modal-footer">
         <button type="button" class="btn btn-secondary" (click)="cerrarModalNuevoProveedor()">
-          Cancelar
+          {{ 'cancelar' | translate }}
         </button>
         <button type="button" class="btn btn-primary" (click)="guardarNuevoProveedor()">
           <i class="pi pi-check"></i>
-          Guardar
+          {{ 'guardar' | translate }}
         </button>
       </div>
     </div>

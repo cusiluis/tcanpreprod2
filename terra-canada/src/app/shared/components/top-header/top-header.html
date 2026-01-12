@@ -26,6 +26,8 @@
         <button
           class="language-option"
           [class.active]="language === 'es'"
+          [class.disabled]="language === 'fr'"
+          [disabled]="language === 'fr'"
           (click)="selectLanguage('es')">
           <i class="pi pi-check" *ngIf="language === 'es'"></i>
           {{ 'spanish' | translate }}

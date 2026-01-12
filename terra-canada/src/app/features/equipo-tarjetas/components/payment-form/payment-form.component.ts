@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angu
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { ClienteService, Cliente } from '../../../../core/services/cliente.service';
 import { ProveedorService, Proveedor } from '../../../../core/services/proveedor.service';
 import { TarjetaService, Tarjeta as TarjetaAPI } from '../../../../core/services/tarjeta.service';
@@ -26,7 +27,7 @@ interface ClienteDisplay {
 @Component({
   selector: 'app-payment-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslatePipe],
   templateUrl: './payment-form.component.html',
   styleUrl: './payment-form.component.scss'
 })

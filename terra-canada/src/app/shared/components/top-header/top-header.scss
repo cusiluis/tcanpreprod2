@@ -205,6 +205,11 @@
             font-weight: 600;
           }
 
+          &.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
+
           i {
             font-size: 12px;
           }
