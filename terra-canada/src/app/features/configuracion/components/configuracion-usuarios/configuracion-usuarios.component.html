@@ -3,15 +3,15 @@
     <div>
       <h3>
         <i class="pi pi-users"></i>
-        Gestión de Usuarios
+        {{ 'gestionUsuariosTitulo' | translate }}
       </h3>
       <p class="section-subtitle">
-        Administre los usuarios del sistema: creación, edición y activación/desactivación.
+        {{ 'gestionUsuariosSubtitulo' | translate }}
       </p>
     </div>
     <button *ngIf="canManageUsers" type="button" class="btn-primary" (click)="abrirModalCrear()">
       <i class="pi pi-user-plus"></i>
-      <span>Nuevo usuario</span>
+      <span>{{ 'nuevoUsuario' | translate }}</span>
     </button>
   </div>
 
@@ -20,7 +20,7 @@
       <i class="pi pi-search"></i>
       <input
         type="text"
-        placeholder="Buscar por nombre, correo o rol..."
+        placeholder="{{ 'buscarUsuariosPlaceholder' | translate }}"
         [(ngModel)]="searchTerm"
         (input)="onSearch()"
         class="search-input"
@@ -36,12 +36,12 @@
       <table class="usuarios-table">
         <thead>
           <tr>
-            <th>Usuario</th>
-            <th>Nombre completo</th>
-            <th>Correo</th>
-            <th>Teléfono</th>
-            <th>Rol</th>
-            <th *ngIf="canManageUsers">Acciones</th>
+            <th>{{ 'usuario' | translate }}</th>
+            <th>{{ 'nombreCompleto' | translate }}</th>
+            <th>{{ 'correoLabel' | translate }}</th>
+            <th>{{ 'telefono' | translate }}</th>
+            <th>{{ 'rolLabel' | translate }}</th>
+            <th *ngIf="canManageUsers">{{ 'acciones' | translate }}</th>
           </tr>
         </thead>
         <tbody>
@@ -81,7 +81,7 @@
             </td>
           </tr>
           <tr *ngIf="filteredUsuarios.length === 0">
-            <td [attr.colspan]="canManageUsers ? 6 : 5" class="empty-message">No hay usuarios para mostrar.</td>
+            <td [attr.colspan]="canManageUsers ? 6 : 5" class="empty-message">{{ 'usuariosVacio' | translate }}</td>
           </tr>
         </tbody>
       </table>
@@ -90,7 +90,7 @@
 
   <div class="loading" *ngIf="isLoading">
     <i class="pi pi-spin pi-spinner"></i>
-    <span>Cargando usuarios...</span>
+    <span>{{ 'cargandoUsuarios' | translate }}</span>
   </div>
 
   <div class="error-message" *ngIf="errorMessage">
@@ -104,26 +104,26 @@
       <button type="button" class="btn-close-modal" (click)="cerrarModalCrear()">
         <i class="pi pi-times"></i>
       </button>
-      <h2>Nuevo usuario</h2>
+      <h2>{{ 'modalNuevoUsuarioTitulo' | translate }}</h2>
 
       <div class="modal-body">
         <div class="form-group">
-          <label>Nombre de usuario *</label>
+          <label>{{ 'usuario' | translate }} *</label>
           <input type="text" [(ngModel)]="nuevoUsuario.nombre_usuario" class="form-input" />
         </div>
 
         <div class="form-group">
-          <label>Correo *</label>
+          <label>{{ 'correoLabel' | translate }} *</label>
           <input type="email" [(ngModel)]="nuevoUsuario.correo" class="form-input" />
         </div>
 
         <div class="form-group">
-          <label>Nombre completo *</label>
+          <label>{{ 'nombreCompleto' | translate }} *</label>
           <input type="text" [(ngModel)]="nuevoUsuario.nombre_completo" class="form-input" />
         </div>
 
         <div class="form-group">
-          <label>Teléfono</label>
+          <label>{{ 'telefono' | translate }}</label>
           <input
             type="text"
             [(ngModel)]="nuevoUsuario.telefono"
@@ -134,14 +134,14 @@
         </div>
 
         <div class="form-group">
-          <label>Rol *</label>
+          <label>{{ 'rolLabel' | translate }} *</label>
           <select [(ngModel)]="nuevoUsuario.rol_id" class="form-input">
             <option *ngFor="let rol of roles" [ngValue]="rol.id">{{ rol.nombre }}</option>
           </select>
         </div>
 
         <div class="form-group">
-          <label>Contraseña *</label>
+          <label>{{ 'cambiarContrasena' | translate }} *</label>
           <div class="password-input-wrapper">
             <input
               [type]="showPassword ? 'text' : 'password'"
@@ -162,11 +162,11 @@
       <div class="modal-actions">
         <button type="button" class="btn-cancel" (click)="cerrarModalCrear()">
           <i class="pi pi-times"></i>
-          Cancelar
+          {{ 'cancelar' | translate }}
         </button>
         <button type="button" class="btn-primary" (click)="onCrearUsuario()">
           <i class="pi pi-check"></i>
-          Crear usuario
+          {{ 'crearUsuarioAccion' | translate }}
         </button>
       </div>
     </div>
@@ -178,26 +178,26 @@
       <button type="button" class="btn-close-modal" (click)="cerrarModalEditar()">
         <i class="pi pi-times"></i>
       </button>
-      <h2>Editar usuario</h2>
+      <h2>{{ 'modalEditarUsuarioTitulo' | translate }}</h2>
 
       <div class="modal-body">
         <div class="form-group">
-          <label>Nombre de usuario</label>
+          <label>{{ 'usuario' | translate }}</label>
           <input type="text" [(ngModel)]="editarUsuarioForm.nombre_usuario" class="form-input" />
         </div>
 
         <div class="form-group">
-          <label>Correo</label>
+          <label>{{ 'correoLabel' | translate }}</label>
           <input type="email" [(ngModel)]="editarUsuarioForm.correo" class="form-input" />
         </div>
 
         <div class="form-group">
-          <label>Nombre completo</label>
+          <label>{{ 'nombreCompleto' | translate }}</label>
           <input type="text" [(ngModel)]="editarUsuarioForm.nombre_completo" class="form-input" />
         </div>
 
         <div class="form-group">
-          <label>Teléfono</label>
+          <label>{{ 'telefono' | translate }}</label>
           <input
             type="text"
             [(ngModel)]="editarUsuarioForm.telefono"
@@ -208,17 +208,17 @@
         </div>
 
         <div class="form-group">
-          <label>Rol</label>
+          <label>{{ 'rolLabel' | translate }}</label>
           <select [(ngModel)]="editarUsuarioForm.rol_id" class="form-input">
             <option *ngFor="let rol of roles" [ngValue]="rol.id">{{ rol.nombre }}</option>
           </select>
         </div>
 
         <div class="form-group">
-          <label>Estado</label>
+          <label>{{ 'estadoLabel' | translate }}</label>
           <select [(ngModel)]="editarUsuarioForm.esta_activo" class="form-input">
-            <option [ngValue]="true">Activo</option>
-            <option [ngValue]="false">Inactivo</option>
+            <option [ngValue]="true">{{ 'activo' | translate }}</option>
+            <option [ngValue]="false">{{ 'inactivo' | translate }}</option>
           </select>
         </div>
       </div>
@@ -226,11 +226,11 @@
       <div class="modal-actions">
         <button type="button" class="btn-cancel" (click)="cerrarModalEditar()">
           <i class="pi pi-times"></i>
-          Cancelar
+          {{ 'cancelar' | translate }}
         </button>
         <button type="button" class="btn-primary" (click)="onEditarUsuario()">
           <i class="pi pi-check"></i>
-          Guardar cambios
+          {{ 'guardarCambios' | translate }}
         </button>
       </div>
     </div>
@@ -242,25 +242,24 @@
       <button type="button" class="btn-close-modal" (click)="cerrarModalEliminar()">
         <i class="pi pi-times"></i>
       </button>
-      <h2>Confirmar eliminación</h2>
+      <h2>{{ 'modalEliminarUsuarioTitulo' | translate }}</h2>
       <div class="modal-body">
         <p>
-          ¿Estás seguro de que deseas eliminar al usuario
+          {{ 'eliminarUsuarioPregunta' | translate }}
           <strong>{{ usuarioAEliminar?.nombre_usuario }}</strong>?
         </p>
         <p>
-          Esta acción desactivará al usuario en el sistema, pero no lo eliminará
-          físicamente de la base de datos.
+          {{ 'eliminarUsuarioNota' | translate }}
         </p>
       </div>
       <div class="modal-actions">
         <button type="button" class="btn-cancel" (click)="cerrarModalEliminar()">
           <i class="pi pi-times"></i>
-          Cancelar
+          {{ 'cancelar' | translate }}
         </button>
         <button type="button" class="btn-primary" (click)="confirmarEliminarUsuario()">
           <i class="pi pi-trash"></i>
-          Eliminar usuario
+          {{ 'eliminarUsuarioAccion' | translate }}
         </button>
       </div>
     </div>
@@ -273,22 +272,22 @@
         <i class="pi pi-times"></i>
       </button>
 
-      <h2>Cambiar contraseña</h2>
+      <h2>{{ 'cambiarContrasena' | translate }}</h2>
 
       <div class="modal-body">
         <p *ngIf="usuarioCambioContrasena">
-          Cambiar contraseña para el usuario
+          {{ 'cambiarContrasena' | translate }} para el usuario
           <strong>{{ usuarioCambioContrasena.nombre_usuario }}</strong>
         </p>
 
         <div class="form-group">
-          <label>Contraseña actual</label>
+          <label>{{ 'contrasenaActual' | translate }}</label>
           <div class="password-input-wrapper">
             <input
               [type]="showCurrentPasswordChange ? 'text' : 'password'"
               [(ngModel)]="passwordChangeForm.currentPassword"
               class="form-input"
-              placeholder="Ingresa la contraseña actual"
+              placeholder="{{ 'placeholderContrasenaActual' | translate }}"
             />
             <button
               type="button"
@@ -301,13 +300,13 @@
         </div>
 
         <div class="form-group">
-          <label>Nueva contraseña</label>
+          <label>{{ 'contrasenaNueva' | translate }}</label>
           <div class="password-input-wrapper">
             <input
               [type]="showNewPasswordChange ? 'text' : 'password'"
               [(ngModel)]="passwordChangeForm.newPassword"
               class="form-input"
-              placeholder="Ingresa una nueva contraseña"
+              placeholder="{{ 'placeholderContrasenaNueva' | translate }}"
             />
             <button
               type="button"
@@ -320,13 +319,13 @@
         </div>
 
         <div class="form-group">
-          <label>Confirmar contraseña</label>
+          <label>{{ 'confirmarContrasena' | translate }}</label>
           <div class="password-input-wrapper">
             <input
               [type]="showConfirmPasswordChange ? 'text' : 'password'"
               [(ngModel)]="passwordChangeForm.confirmPassword"
               class="form-input"
-              placeholder="Confirma la nueva contraseña"
+              placeholder="{{ 'placeholderContrasenaConfirmar' | translate }}"
             />
             <button
               type="button"
@@ -342,7 +341,7 @@
       <div class="modal-actions">
         <button type="button" class="btn-cancel" (click)="cerrarModalCambioContrasena()" [disabled]="isChangingPassword">
           <i class="pi pi-times"></i>
-          Cancelar
+          {{ 'cancelar' | translate }}
         </button>
         <button
           type="button"
@@ -351,7 +350,7 @@
           [disabled]="isChangingPassword"
         >
           <i class="pi" [ngClass]="isChangingPassword ? 'pi-spin pi-spinner' : 'pi-check'"></i>
-          <span>{{ isChangingPassword ? 'Guardando...' : 'Cambiar contraseña' }}</span>
+          <span>{{ isChangingPassword ? ('guardandoCambios' | translate) : ('cambiarContrasena' | translate) }}</span>
         </button>
       </div>
     </div>

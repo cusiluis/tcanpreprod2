@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
+import { TranslationService } from '../../../../core/services/translation.service';
 import { UsuarioService } from '../../../../core/services/usuario.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { NotificationService } from '../../../../core/services/notification.service';
@@ -44,7 +45,8 @@ export class ConfiguracionSeguridadComponent implements OnInit {
     private usuarioService: UsuarioService,
     private authService: AuthService,
     private notificationService: NotificationService,
-    private router: Router
+    private router: Router,
+    private translationService: TranslationService
   ) {}
 
   ngOnInit(): void {
@@ -72,7 +74,7 @@ export class ConfiguracionSeguridadComponent implements OnInit {
 
     this.passwordStrength = Math.min(strength, 5);
 
-    const labels = ['', 'Muy débil', 'Débil', 'Regular', 'Fuerte', 'Muy fuerte'];
+    const labels = ['', this.translationService.translate('passwordMuyDebil'), this.translationService.translate('passwordDebil'), this.translationService.translate('passwordRegular'), this.translationService.translate('passwordFuerte'), this.translationService.translate('passwordMuyFuerte')];
     this.passwordStrengthLabel = labels[this.passwordStrength];
   }
 
@@ -113,7 +115,7 @@ export class ConfiguracionSeguridadComponent implements OnInit {
         next: () => {
           this.resetPasswordForm();
           console.log('Contraseña cambiada exitosamente');
-          this.notificationService.success('✅ Contraseña cambiada correctamente');
+          this.notificationService.success(`✅ ${this.translationService.translate('contrasenaActualizada')}`);
           this.showReLoginModal = true;
 
           // Actualizar fecha de último cambio de contraseña en la tarjeta de información
@@ -122,30 +124,30 @@ export class ConfiguracionSeguridadComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error cambiando contraseña:', error);
-          this.notificationService.error('❌ Error cambiando contraseña');
+          this.notificationService.error(`❌ ${this.translationService.translate('errorCambiandoContrasena')}`);
         }
       });
   }
 
   validatePasswordForm(): boolean {
     if (!this.passwordForm.currentPassword) {
-      console.error('Ingresa tu contraseña actual');
+      console.error(this.translationService.translate('ingresaContrasenaActual'));
       return false;
     }
     if (!this.passwordForm.newPassword) {
-      console.error('Ingresa una nueva contraseña');
+      console.error(this.translationService.translate('ingresaContrasenaNueva'));
       return false;
     }
     if (this.passwordForm.newPassword.length < 8) {
-      console.error('La contraseña debe tener al menos 8 caracteres');
+      console.error(this.translationService.translate('contrasenaMin8'));
       return false;
     }
     if (this.passwordForm.newPassword !== this.passwordForm.confirmPassword) {
-      console.error('Las contraseñas no coinciden');
+      console.error(this.translationService.translate('contrasenasNoCoinciden'));
       return false;
     }
     if (this.passwordForm.currentPassword === this.passwordForm.newPassword) {
-      console.error('La nueva contraseña debe ser diferente a la actual');
+      console.error(this.translationService.translate('contrasenaNuevaIgualActual'));
       return false;
     }
     return true;

@@ -3,7 +3,7 @@
     <div *ngFor="let card of documentCards" class="document-card">
       <div class="card-header">
         <i [ngClass]="card.icon"></i>
-        <h4>{{ card.title }}</h4>
+        <h4>{{ card.titleKey | translate }}</h4>
       </div>
 
       <div class="card-content">
@@ -12,12 +12,9 @@
           (click)="triggerFileInput(card.id)"
         >
           <i class="pi pi-cloud-upload upload-icon"></i>
-          <p class="upload-text">{{ card.description }}</p>
-          <p class="upload-hint" *ngIf="card.id === 'invoices'">
-            (Hasta 3 archivos PDF)
-          </p>
-          <p class="upload-hint" *ngIf="card.id === 'bank-doc'">
-            (Hasta 1 archivo PDF)
+          <p class="upload-text">{{ card.descriptionKey | translate }}</p>
+          <p class="upload-hint" *ngIf="card.hintKey">
+            {{ card.hintKey | translate }}
           </p>
         </div>
 
@@ -68,7 +65,7 @@
           <span>
             {{
               isScanning && activeScanCardId === card.id
-                ? 'Escaneando...'
+                ? ('docUploadScanning' | translate)
                 : ('escanearDocumento' | translate)
             }}
           </span>
@@ -107,8 +104,8 @@
           <span>
             {{
               isScanning && activeScanCardId === card.id
-                ? 'Escaneando...'
-                : 'Escanear Documento Banco'
+                ? ('docUploadScanning' | translate)
+                : ('docUploadScanBank' | translate)
             }}
           </span>
         </button>

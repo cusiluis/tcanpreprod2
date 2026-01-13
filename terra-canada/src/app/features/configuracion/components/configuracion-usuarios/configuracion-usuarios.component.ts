@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRe
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
+import { TranslationService } from '../../../../core/services/translation.service';
 import { UsuarioService, Usuario, CreateUsuarioPayload, UpdateUsuarioPayload } from '../../../../core/services/usuario.service';
 import { Subject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
@@ -91,7 +92,8 @@ export class ConfiguracionUsuariosComponent implements OnInit, OnDestroy {
     private usuarioService: UsuarioService,
     private cdr: ChangeDetectorRef,
     private notificationService: NotificationService,
-    private authService: AuthService
+    private authService: AuthService,
+    private translationService: TranslationService
   ) {}
 
   ngOnInit(): void {
@@ -206,7 +208,7 @@ export class ConfiguracionUsuariosComponent implements OnInit, OnDestroy {
 
   onCrearUsuario(): void {
     if (!this.nuevoUsuario.nombre_usuario || !this.nuevoUsuario.correo || !this.nuevoUsuario.contrasena || !this.nuevoUsuario.nombre_completo) {
-      this.notificationService.error('❌ Completa los campos obligatorios para crear el usuario');
+      this.notificationService.error(`❌ ${this.translationService.translate('usuariosCamposObligatoriosCrear')}`);
       return;
     }
 
@@ -214,14 +216,14 @@ export class ConfiguracionUsuariosComponent implements OnInit, OnDestroy {
       next: (usuario) => {
         console.log('Usuario creado:', usuario);
         this.showCreateModal = false;
-        const msg = 'Usuario creado correctamente';
+        const msg = this.translationService.translate('usuarioCreado');
         this.notificationService.success(`✅ ${msg}`);
         this.usuarioService.recargarUsuarios();
       },
       error: (error) => {
         console.error('Error creando usuario:', error);
         const msg =
-          error?.error?.error?.message || error?.message || 'Error creando usuario';
+          error?.error?.error?.message || error?.message || this.translationService.translate('errorCrearUsuario');
         this.errorMessage = msg;
         this.notificationService.error(`❌ ${msg}`);
       }
@@ -258,7 +260,7 @@ export class ConfiguracionUsuariosComponent implements OnInit, OnDestroy {
     }
 
     if (!this.editarUsuarioForm.nombre_usuario || !this.editarUsuarioForm.correo || !this.editarUsuarioForm.nombre_completo) {
-      this.notificationService.error('❌ Completa los campos obligatorios para editar el usuario');
+      this.notificationService.error(`❌ ${this.translationService.translate('usuariosCamposObligatoriosEditar')}`);
       return;
     }
 
@@ -275,14 +277,14 @@ export class ConfiguracionUsuariosComponent implements OnInit, OnDestroy {
       next: (usuario) => {
         console.log('Usuario actualizado:', usuario);
         this.showEditModal = false;
-        const msg = 'Usuario actualizado correctamente';
+        const msg = this.translationService.translate('usuarioActualizado');
         this.notificationService.success(`✅ ${msg}`);
         this.usuarioService.recargarUsuarios();
       },
       error: (error) => {
         console.error('Error actualizando usuario:', error);
         const msg =
-          error?.error?.error?.message || error?.message || 'Error actualizando usuario';
+          error?.error?.error?.message || error?.message || this.translationService.translate('errorEditarUsuario');
         this.errorMessage = msg;
         this.notificationService.error(`❌ ${msg}`);
       }
@@ -298,14 +300,14 @@ export class ConfiguracionUsuariosComponent implements OnInit, OnDestroy {
     this.usuarioService.desactivarUsuario(usuario.id).subscribe({
       next: () => {
         console.log('Usuario desactivado');
-        const msg = 'Usuario eliminado correctamente';
+        const msg = this.translationService.translate('usuarioEliminado');
         this.notificationService.success(`✅ ${msg}`);
         this.usuarioService.recargarUsuarios();
       },
       error: (error) => {
         console.error('Error desactivando usuario:', error);
         const msg =
-          error?.error?.error?.message || error?.message || 'Error desactivando usuario';
+          error?.error?.error?.message || error?.message || this.translationService.translate('errorDesactivandoUsuario');
         this.errorMessage = msg;
         this.notificationService.error(`❌ ${msg}`);
       }
@@ -371,23 +373,23 @@ export class ConfiguracionUsuariosComponent implements OnInit, OnDestroy {
 
   private validatePasswordChangeForm(): boolean {
     if (!this.passwordChangeForm.currentPassword) {
-      this.notificationService.error('❌ Ingresa la contraseña actual');
+      this.notificationService.error(`❌ ${this.translationService.translate('ingresaContrasenaActual')}`);
       return false;
     }
     if (!this.passwordChangeForm.newPassword) {
-      this.notificationService.error('❌ Ingresa una nueva contraseña');
+      this.notificationService.error(`❌ ${this.translationService.translate('ingresaContrasenaNueva')}`);
       return false;
     }
     if (this.passwordChangeForm.newPassword.length < 8) {
-      this.notificationService.error('❌ La contraseña debe tener al menos 8 caracteres');
+      this.notificationService.error(`❌ ${this.translationService.translate('contrasenaMin8')}`);
       return false;
     }
     if (this.passwordChangeForm.newPassword !== this.passwordChangeForm.confirmPassword) {
-      this.notificationService.error('❌ Las contraseñas no coinciden');
+      this.notificationService.error(`❌ ${this.translationService.translate('contrasenasNoCoinciden')}`);
       return false;
     }
     if (this.passwordChangeForm.currentPassword === this.passwordChangeForm.newPassword) {
-      this.notificationService.error('❌ La nueva contraseña debe ser diferente a la actual');
+      this.notificationService.error(`❌ ${this.translationService.translate('contrasenaNuevaIgualActual')}`);
       return false;
     }
     return true;
@@ -424,7 +426,7 @@ export class ConfiguracionUsuariosComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: () => {
-          const msg = 'Contraseña actualizada correctamente';
+          const msg = this.translationService.translate('contrasenaActualizada');
           this.notificationService.success(`✅ ${msg}`);
           this.cerrarModalCambioContrasena();
         },
@@ -433,7 +435,7 @@ export class ConfiguracionUsuariosComponent implements OnInit, OnDestroy {
           const msg =
             error?.error?.error?.message ||
             error?.message ||
-            'Error cambiando contraseña';
+            this.translationService.translate('errorCambiandoContrasena');
           this.notificationService.error(`❌ ${msg}`);
         }
       });

@@ -1,4 +1,12 @@
-import { Component, OnInit, Output, EventEmitter, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Output,
+  EventEmitter,
+  OnDestroy,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { PagoService, Pago } from '../../../../core/services/pago.service';
@@ -9,6 +17,8 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { GmailGenService } from '../../../../core/services/gmail-gen.service';
+import { TranslationService } from '../../../../core/services/translation.service';
+import { TranslationKey } from '../../../../shared/models/translations.model';
 
 @Component({
   selector: 'app-card-payment-records',
@@ -39,67 +49,77 @@ export class CardPaymentRecordsComponent implements OnInit, OnDestroy {
   columns: TableColumn[] = [
     {
       key: 'fecha_creacion',
-      label: 'Fecha',
+      label: 'fecha',
+      translationKey: 'fecha',
       type: 'date',
       width: '100px'
     },
     {
       key: 'cliente.nombre',
-      label: 'Cliente',
+      label: 'cliente',
+      translationKey: 'cliente',
       type: 'text',
       width: '150px',
       formatter: (value, row) => row.cliente?.nombre || 'N/A'
     },
     {
       key: 'proveedor.nombre',
-      label: 'Proveedor',
+      label: 'proveedor',
+      translationKey: 'proveedor',
       type: 'text',
       width: '150px',
       formatter: (value, row) => row.proveedor?.nombre || 'N/A'
     },
     {
       key: 'monto',
-      label: 'Monto',
+      label: 'monto',
+      translationKey: 'monto',
       type: 'currency',
       width: '100px'
     },
     {
       key: 'numero_presta',
-      label: 'N° Presta',
+      label: 'numeroPresta',
+      translationKey: 'numeroPresta',
       type: 'text',
       width: '120px'
     },
     {
       key: 'tarjeta.numero_enmascarado',
-      label: 'Tarjeta',
+      label: 'tarjeta',
+      translationKey: 'tarjeta',
       type: 'text',
       width: '130px',
       formatter: (value, row) => row.tarjeta?.numero_enmascarado || 'N/A'
     },
     {
       key: 'estado',
-      label: 'Estado',
+      label: 'estado',
+      translationKey: 'estado',
       type: 'badge',
       width: '100px',
       badgeClass: (value) => this.getStatusClass(value)
     },
     {
       key: 'esta_verificado',
-      label: 'Verificación',
+      label: 'verificacion',
+      translationKey: 'verificacion',
       type: 'badge',
       width: '100px',
-      formatter: (value) => value ? 'Sí' : 'No',
+      formatter: (value) => (value ? this.t('si') : this.t('no')),
       badgeClass: (value) => this.getVerificationClass(value)
     },
     {
       key: 'enviado_correo',
-      label: 'Correo',
+      label: 'correo',
+      translationKey: 'correo',
       type: 'custom',
       width: '90px'
     },
     {
       key: 'registrado_por.nombre_completo',
-      label: 'Registrado por',
+      label: 'registradoPor',
+      translationKey: 'registradoPor',
       type: 'text',
       width: '150px',
       formatter: (value, row) => row.registrado_por?.nombre_completo || 'N/A'
@@ -109,20 +129,23 @@ export class CardPaymentRecordsComponent implements OnInit, OnDestroy {
   actions: RowAction[] = [
     {
       id: 'view',
-      label: 'Ver',
+      label: 'ver',
+      translationKey: 'ver',
       icon: 'pi pi-eye',
       class: 'view-btn'
     },
     {
       id: 'edit',
-      label: 'Editar',
+      label: 'editar',
+      translationKey: 'editar',
       icon: 'pi pi-pencil',
       class: 'edit-btn',
       disabled: (row) => !!row.esta_verificado
     },
     {
       id: 'delete',
-      label: 'Eliminar',
+      label: 'eliminar',
+      translationKey: 'eliminar',
       icon: 'pi pi-trash',
       class: 'delete-btn',
       disabled: (row) => row?.estado?.toUpperCase() === 'PAGADO' || !!row.esta_verificado
@@ -140,7 +163,8 @@ export class CardPaymentRecordsComponent implements OnInit, OnDestroy {
     private notificationService: NotificationService,
     private authService: AuthService,
     private cdr: ChangeDetectorRef,
-    private gmailGenService: GmailGenService
+    private gmailGenService: GmailGenService,
+    private translationService: TranslationService
   ) {}
 
   ngOnInit(): void {
@@ -381,5 +405,9 @@ export class CardPaymentRecordsComponent implements OnInit, OnDestroy {
 
   getVerificationClass(verified: boolean): string {
     return verified ? 'verified' : 'not-verified';
+  }
+
+  private t(key: TranslationKey): string {
+    return this.translationService.translate(key);
   }
 }

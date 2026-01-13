@@ -9,6 +9,8 @@ import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from '../../shared/components/sidebar/sidebar';
 import { TopHeaderComponent } from '../../shared/components/top-header/top-header';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
+import { TranslationService } from '../../core/services/translation.service';
+import { TranslationKey } from '../../shared/models/translations.model';
 import {
   GmailGenService,
   GmailEmailGroup,
@@ -116,7 +118,8 @@ export class GmailGenComponent implements OnInit {
 
   constructor(
     private gmailGenService: GmailGenService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private translationService: TranslationService
   ) {}
 
   ngOnInit(): void {
@@ -259,8 +262,8 @@ export class GmailGenComponent implements OnInit {
   openComposeModal(group: GmailEmailGroup): void {
     this.selectedGroup = group;
     this.composeForm.para = group.correoContacto;
-    this.composeForm.asunto = 'Confirmation de paiement';
-    this.composeForm.mensaje = 'Bonjour, je vous envoie les paiements que nous vous avons faits. Allez les voir.';
+    this.composeForm.asunto = this.t('gmailGenDefaultSubject');
+    this.composeForm.mensaje = this.t('gmailGenDefaultBody');
     this.showComposeModal = true;
   }
 
@@ -292,8 +295,7 @@ export class GmailGenComponent implements OnInit {
 
     if (!fechaResumen) {
       // Si no logramos resolver fecha, abortamos para no enviar con datos incompletos
-      this.errorToastMessage =
-        'No se pudo determinar la fecha del resumen de pagos para este proveedor';
+      this.errorToastMessage = this.t('gmailGenToastMissingDate');
       this.showErrorToast = true;
       this.cdr.markForCheck();
       setTimeout(() => {
@@ -322,8 +324,7 @@ export class GmailGenComponent implements OnInit {
               response
             );
             this.errorToastMessage =
-              (response as any)?.error?.message ||
-              'Error enviando correo de confirmación a proveedor';
+              (response as any)?.error?.message || this.t('gmailGenToastErrorMessage');
             this.showErrorToast = true;
             this.cdr.markForCheck();
             setTimeout(() => {
@@ -339,7 +340,7 @@ export class GmailGenComponent implements OnInit {
           this.selectedGroup = null;
           this.cargarResumen();
 
-          this.successToastMessage = 'Correo enviado correctamente';
+          this.successToastMessage = this.t('gmailGenToastSuccessMessage');
           this.showSuccessToast = true;
           this.cdr.markForCheck();
           setTimeout(() => {
@@ -353,7 +354,8 @@ export class GmailGenComponent implements OnInit {
             'Error HTTP enviando correo de confirmación a proveedor',
             error
           );
-          this.errorToastMessage = 'Error enviando correo de confirmación a proveedor';
+          this.errorToastMessage =
+            (error as any)?.message || this.t('gmailGenToastErrorMessage');
           this.showErrorToast = true;
           this.cdr.markForCheck();
           setTimeout(() => {
@@ -372,8 +374,8 @@ export class GmailGenComponent implements OnInit {
     this.selectedEmailInfo = {
       proveedorNombre: group.proveedorNombre,
       correoElectronico: info?.correoElectronico || group.correoContacto,
-      asunto: info?.asunto || 'Confirmation de paiement',
-      mensaje: info?.mensaje || 'Détails des paiements envoyés.',
+      asunto: info?.asunto || this.t('gmailGenDefaultSubject'),
+      mensaje: info?.mensaje || this.t('gmailGenInfoDefaultMessage'),
       totalPagos: group.totalPagos,
       totalMonto: group.totalMonto,
       fechaEnvioTexto: fecha.toLocaleString()
@@ -398,7 +400,7 @@ export class GmailGenComponent implements OnInit {
       envio.cuerpo_correo ||
       (envio as any).mensaje ||
       (envio as any).cuerpo_correo ||
-      '';
+      this.t('gmailGenInfoDefaultMessage');
 
     const pagosDetallados = ((envio as any).pagos || []) as {
       id_pago: number;
@@ -447,5 +449,9 @@ export class GmailGenComponent implements OnInit {
 
   closeDetailsModal(): void {
     this.showDetailsModal = false;
+  }
+
+  private t(key: TranslationKey): string {
+    return this.translationService.translate(key);
   }
 }

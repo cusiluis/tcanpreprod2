@@ -1,11 +1,25 @@
-import { Component, OnInit, Output, EventEmitter, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Output,
+  EventEmitter,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
-import { PaginatedTableComponent, TableColumn, RowAction, ActionEvent } from '../../../../shared/components/paginated-table';
+import {
+  PaginatedTableComponent,
+  TableColumn,
+  RowAction,
+  ActionEvent
+} from '../../../../shared/components/paginated-table';
 import { PagoBancarioService, PagoBancario } from '../../../../core/services/pago-bancario.service';
 import { PaymentFormComponent } from '../payment-form/payment-form.component';
 import { DatePickerModule } from 'primeng/datepicker';
 import { GmailGenService } from '../../../../core/services/gmail-gen.service';
+import { TranslationService } from '../../../../core/services/translation.service';
+import { TranslationKey } from '../../../../shared/models/translations.model';
 
 export interface BancaryPaymentRecord {
   id: number;
@@ -49,64 +63,74 @@ export class BancaryPaymentRecordsComponent implements OnInit {
   columns: TableColumn[] = [
     {
       key: 'date',
-      label: 'Fecha',
+      label: 'fecha',
+      translationKey: 'fecha',
       type: 'date',
       width: '100px'
     },
     {
       key: 'clienteNombre',
-      label: 'Cliente',
+      label: 'cliente',
+      translationKey: 'cliente',
       type: 'text',
       width: '150px'
     },
     {
       key: 'proveedorNombre',
-      label: 'Proveedor',
+      label: 'proveedor',
+      translationKey: 'proveedor',
       type: 'text',
       width: '150px'
     },
     {
       key: 'amount',
-      label: 'Monto',
+      label: 'monto',
+      translationKey: 'monto',
       type: 'currency',
       width: '100px'
     },
     {
       key: 'code',
-      label: 'NºPresta',
+      label: 'numeroPresta',
+      translationKey: 'numeroPresta',
       type: 'text',
       width: '120px'
     },
     {
       key: 'cuentaNumero',
-      label: 'Cuenta',
+      label: 'cuenta',
+      translationKey: 'cuenta',
       type: 'text',
       width: '150px'
     },
     {
       key: 'status',
-      label: 'Estado',
+      label: 'estado',
+      translationKey: 'estado',
       type: 'badge',
       width: '100px',
       badgeClass: (value) => this.getStatusClass(value)
     },
     {
       key: 'verification',
-      label: 'Verificación',
+      label: 'verificacion',
+      translationKey: 'verificacion',
       type: 'badge',
       width: '100px',
-      formatter: (value) => value === true ? 'Sí' : 'No',
+      formatter: (value) => (value === true ? this.t('si') : this.t('no')),
       badgeClass: (value) => value === true ? 'verified' : 'not-verified'
     },
     {
       key: 'enviado_correo',
-      label: 'Correo',
+      label: 'correo',
+      translationKey: 'correo',
       type: 'custom',
       width: '90px'
     },
     {
       key: 'user',
-      label: 'Usuario',
+      label: 'usuario',
+      translationKey: 'usuario',
       type: 'text',
       width: '120px'
     }
@@ -141,7 +165,8 @@ export class BancaryPaymentRecordsComponent implements OnInit {
   constructor(
     private cdr: ChangeDetectorRef,
     private pagoBancarioService: PagoBancarioService,
-    private gmailGenService: GmailGenService
+    private gmailGenService: GmailGenService,
+    private translationService: TranslationService
   ) {}
 
   ngOnInit(): void {
@@ -404,5 +429,9 @@ export class BancaryPaymentRecordsComponent implements OnInit {
     if (tab === 'pendientes') this.statusFilter = 'A PAGAR';
     if (tab === 'pagados') this.statusFilter = 'PAGADO';
     this.applyFilters();
+  }
+
+  private t(key: TranslationKey): string {
+    return this.translationService.translate(key);
   }
 }

@@ -16,7 +16,7 @@
             [type]="showCurrentPassword ? 'text' : 'password'"
             [(ngModel)]="passwordForm.currentPassword"
             name="currentPassword"
-            placeholder="Ingresa tu contraseña actual"
+            placeholder="{{ 'ingresaContrasenaActual' | translate }}"
             class="form-input"
           />
           <button
@@ -39,7 +39,7 @@
             [(ngModel)]="passwordForm.newPassword"
             (input)="onNewPasswordChange()"
             name="newPassword"
-            placeholder="Ingresa una nueva contraseña"
+            placeholder="{{ 'ingresaContrasenaNueva' | translate }}"
             class="form-input"
           />
           <button
@@ -71,19 +71,19 @@
           <ul>
             <li [class.met]="passwordForm.newPassword.length >= 8">
               <i class="pi" [ngClass]="passwordForm.newPassword.length >= 8 ? 'pi-check' : 'pi-times'"></i>
-              Mínimo 8 caracteres
+              {{ 'requisitoMin8' | translate }}
             </li>
             <li [class.met]="/[a-z]/.test(passwordForm.newPassword) && /[A-Z]/.test(passwordForm.newPassword)">
               <i class="pi" [ngClass]="/[a-z]/.test(passwordForm.newPassword) && /[A-Z]/.test(passwordForm.newPassword) ? 'pi-check' : 'pi-times'"></i>
-              Mayúsculas y minúsculas
+              {{ 'requisitoMayusMinus' | translate }}
             </li>
             <li [class.met]="/\d/.test(passwordForm.newPassword)">
               <i class="pi" [ngClass]="/\d/.test(passwordForm.newPassword) ? 'pi-check' : 'pi-times'"></i>
-              Al menos un número
+              {{ 'requisitoNumero' | translate }}
             </li>
             <li [class.met]="/[!@#$%^&*]/.test(passwordForm.newPassword)">
               <i class="pi" [ngClass]="/[!@#$%^&*]/.test(passwordForm.newPassword) ? 'pi-check' : 'pi-times'"></i>
-              Carácter especial (!@#$%^&*)
+              {{ 'requisitoEspecial' | translate }}
             </li>
           </ul>
         </div>
@@ -98,7 +98,7 @@
             [type]="showConfirmPassword ? 'text' : 'password'"
             [(ngModel)]="passwordForm.confirmPassword"
             name="confirmPassword"
-            placeholder="Confirma tu nueva contraseña"
+            placeholder="{{ 'ingresaContrasenaNueva' | translate }}"
             class="form-input"
             [class.mismatch]="passwordForm.confirmPassword && passwordForm.newPassword !== passwordForm.confirmPassword"
           />
@@ -115,7 +115,7 @@
           class="error-message"
         >
           <i class="pi pi-exclamation-circle"></i>
-          Las contraseñas no coinciden
+          {{ 'contrasenasNoCoinciden' | translate }}
         </p>
       </div>
 
@@ -144,12 +144,12 @@
       </button>
     </div>
     <div class="mini-modal-body">
-      <p>Tu contraseña ha sido actualizada correctamente.</p>
-      <p>Para continuar navegando debes volver a iniciar sesión.</p>
+      <p>{{ 'passwordActualizadaMensaje1' | translate }}</p>
+      <p>{{ 'passwordActualizadaMensaje2' | translate }}</p>
     </div>
     <div class="mini-modal-footer">
       <button type="button" class="btn btn-primary" (click)="aceptarReLogin()">
-        Aceptar
+        {{ 'aceptar' | translate }}
       </button>
     </div>
   </div>

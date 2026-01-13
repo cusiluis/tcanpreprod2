@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
+import { TranslationService } from '../../../../core/services/translation.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { User } from '../../../../shared/models/auth.model';
 import { UsuarioService, Usuario, UpdateUsuarioPayload } from '../../../../core/services/usuario.service';
@@ -37,7 +38,8 @@ export class ConfiguracionPerfilComponent implements OnInit {
     private authService: AuthService,
     private usuarioService: UsuarioService,
     private notificationService: NotificationService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private translationService: TranslationService
   ) {}
 
   ngOnInit(): void {
@@ -155,7 +157,7 @@ export class ConfiguracionPerfilComponent implements OnInit {
           this.currentUser = updatedUser;
         }
 
-        const msg = 'Perfil actualizado correctamente';
+        const msg = this.translationService.translate('usuarioActualizado');
         setTimeout(() => {
           this.notificationService.success(`✅ ${msg}`);
         }, 0);
@@ -167,7 +169,7 @@ export class ConfiguracionPerfilComponent implements OnInit {
         const msg =
           error?.error?.error?.message ||
           error?.message ||
-          'Error actualizando perfil';
+          this.translationService.translate('errorEditarUsuario');
         setTimeout(() => {
           this.notificationService.error(`❌ ${msg}`);
         }, 0);

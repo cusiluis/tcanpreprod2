@@ -7,12 +7,15 @@ import {
   WebhookArchivoPdf
 } from '../../../../core/services/pago.service';
 import { EventoService } from '../../../../core/services/evento.service';
+import { TranslationService } from '../../../../core/services/translation.service';
+import { TranslationKey } from '../../../../shared/models/translations.model';
 
 interface DocumentCard {
   id: string;
-  title: string;
+  titleKey: TranslationKey;
   icon: string;
-  description: string;
+  descriptionKey: TranslationKey;
+  hintKey?: TranslationKey;
   files: File[];
   scanMessage: string | null;
   scanError: string | null;
@@ -36,9 +39,10 @@ export class DocumentUploadComponent {
   documentCards: DocumentCard[] = [
     {
       id: 'invoices',
-      title: 'Facturas',
+      titleKey: 'docUploadInvoicesTitle',
       icon: 'pi pi-file-pdf',
-      description: 'Adjunta archivos o haz clic',
+      descriptionKey: 'docUploadInvoicesDesc',
+      hintKey: 'docUploadInvoicesHint',
       files: [],
       scanMessage: null,
       scanError: null,
@@ -46,9 +50,10 @@ export class DocumentUploadComponent {
     },
     {
       id: 'bank-doc',
-      title: 'Documento Banco',
+      titleKey: 'docUploadBankDocTitle',
       icon: 'pi pi-file-word',
-      description: 'Adjunta un archivo o haz clic',
+      descriptionKey: 'docUploadBankDocDesc',
+      hintKey: 'docUploadBankDocHint',
       files: [],
       scanMessage: null,
       scanError: null,
@@ -59,7 +64,8 @@ export class DocumentUploadComponent {
   constructor(
     private pagoService: PagoService,
     private cdr: ChangeDetectorRef,
-    private eventoService: EventoService
+    private eventoService: EventoService,
+    private translationService: TranslationService
   ) {}
 
   onFileSelected(event: Event, cardId: string): void {
@@ -82,7 +88,7 @@ export class DocumentUploadComponent {
         });
 
         if (pdfFiles.length === 0) {
-          card.scanError = 'Solo se permiten archivos PDF.';
+          card.scanError = this.t('docUploadOnlyPdfError');
           return;
         }
 
@@ -91,8 +97,9 @@ export class DocumentUploadComponent {
 
         // Si se supera el máximo permitido, avisamos al usuario
         if (totalArchivos > maxFiles) {
-          const limiteTexto = maxFiles === 1 ? '1 archivo PDF' : '3 archivos PDF';
-          card.scanError = `Solo se pueden subir hasta ${limiteTexto} a la vez.`;
+          const limiteTexto =
+            maxFiles === 1 ? this.t('docUploadLimitSingle') : this.t('docUploadLimitMultiple');
+          card.scanError = `${this.t('docUploadLimitPrefix')} ${limiteTexto} ${this.t('docUploadLimitSuffix')}`;
         } else {
           card.scanError = null;
         }
@@ -101,8 +108,9 @@ export class DocumentUploadComponent {
         if (espacioDisponible <= 0) {
           // Ya alcanzó el máximo en esta tarjeta
           if (!card.scanError) {
-            const limiteTexto = maxFiles === 1 ? '1 archivo PDF' : '3 archivos PDF';
-            card.scanError = `Solo se permiten hasta ${limiteTexto}.`;
+            const limiteTexto =
+              maxFiles === 1 ? this.t('docUploadLimitSingle') : this.t('docUploadLimitMultiple');
+            card.scanError = `${this.t('docUploadLimitPrefixAlt')} ${limiteTexto}.`;
           }
           return;
         }
@@ -144,7 +152,7 @@ export class DocumentUploadComponent {
     const card = this.documentCards.find(c => c.id === cardId);
     if (!card || card.files.length === 0) {
       if (card) {
-        card.scanError = 'Debes adjuntar al menos un archivo PDF antes de escanear.';
+        card.scanError = this.t('docUploadNeedPdf');
       }
       return;
     }
@@ -161,7 +169,7 @@ export class DocumentUploadComponent {
 
     if (pdfFiles.length === 0) {
       if (card) {
-        card.scanError = 'Solo se permiten archivos PDF.';
+        card.scanError = this.t('docUploadOnlyPdfError');
       }
       return;
     }
@@ -198,7 +206,7 @@ export class DocumentUploadComponent {
 
         if (!base64) {
           if (card) {
-            card.scanError = 'No se pudo leer el contenido del archivo PDF.';
+            card.scanError = this.t('docUploadReadError');
             card.scanMessage = null;
           }
           this.isScanning = false;
@@ -216,7 +224,7 @@ export class DocumentUploadComponent {
 
       reader.onerror = () => {
         if (card) {
-          card.scanError = 'Error leyendo el archivo PDF.';
+          card.scanError = this.t('docUploadReadError');
           card.scanMessage = null;
         }
         this.isScanning = false;
@@ -227,7 +235,7 @@ export class DocumentUploadComponent {
 
     this.isScanning = true;
     if (card) {
-      card.scanMessage = 'Escaneando documento...';
+      card.scanMessage = this.t('docUploadScanning');
       card.scanError = null;
     }
     leerArchivo(0);
@@ -238,7 +246,7 @@ export class DocumentUploadComponent {
     this.isScanning = true;
     if (card) {
       card.scanError = null;
-      card.scanMessage = 'Escaneando documento...';
+      card.scanMessage = this.t('docUploadScanning');
       card.isScanSuccess = false;
     }
 
@@ -250,7 +258,7 @@ export class DocumentUploadComponent {
         if (response?.code === 200 && response?.estado === true) {
           if (card) {
             card.isScanSuccess = true;
-            card.scanMessage = response.mensaje || 'Documento validado correctamente.';
+            card.scanMessage = response.mensaje || this.t('docUploadValidated');
             card.scanError = null;
           }
 
@@ -418,5 +426,9 @@ export class DocumentUploadComponent {
         console.error('Error registrando evento de subida/escaneo de PDF:', error);
       }
     });
+  }
+
+  private t(key: TranslationKey): string {
+    return this.translationService.translate(key);
   }
 }
