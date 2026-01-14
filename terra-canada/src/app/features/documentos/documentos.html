@@ -25,6 +25,7 @@
           [(ngModel)]="selectedDateFilter"
           (change)="onDateFilterChange()"
           class="date-input"
+          [attr.placeholder]="'docsDatePlaceholder' | translate"
         />
         <button *ngIf="selectedDateFilter" (click)="clearDateFilter()" class="btn-clear-filter">
           <i class="pi pi-times"></i>

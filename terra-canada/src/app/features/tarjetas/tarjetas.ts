@@ -9,6 +9,7 @@ import { NotificationComponent, Notification } from '../../shared/components/not
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { TarjetaService, Tarjeta } from '../../core/services/tarjeta.service';
 import { NotificationService } from '../../core/services/notification.service';
+import { TranslationService } from '../../core/services/translation.service';
 
 /**
  * TarjetasComponent
@@ -63,7 +64,8 @@ export class TarjetasComponent implements OnInit {
 
   constructor(
     private tarjetaService: TarjetaService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private translationService: TranslationService
   ) {}
 
   ngOnInit(): void {
@@ -101,9 +103,12 @@ export class TarjetasComponent implements OnInit {
     this.fechaResetTexto = `${dia}/${mesNumero}/${anioNumero}`;
 
     const plural = this.diasHastaReset === 1 ? '' : 's';
-    this.mensajeResetTarjetas =
-      `Aviso: dentro de ${this.diasHastaReset} día${plural} las tarjetas ` +
-      `se restablecerán automáticamente a su saldo máximo (el ${this.fechaResetTexto}).`;
+    let template = this.translationService.translate('tarjetasAvisoResetTemplate');
+    template = template
+      .replace('{dias}', String(this.diasHastaReset))
+      .replace('{plural}', plural)
+      .replace('{fecha}', this.fechaResetTexto);
+    this.mensajeResetTarjetas = template;
   }
 
   /**

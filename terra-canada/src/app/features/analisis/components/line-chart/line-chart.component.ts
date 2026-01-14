@@ -2,6 +2,7 @@ import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { AnalisisTemporalPagoDia } from '../../../../shared/models/analisis.model';
+import { TranslationService } from '../../../../core/services/translation.service';
 
 @Component({
   selector: 'app-line-chart',
@@ -26,6 +27,8 @@ export class LineChartComponent implements OnInit {
   private readonly fillColor = 'rgba(45, 122, 122, 0.1)';
 
   private maxValue = 0;
+
+  constructor(private translationService: TranslationService) {}
 
   ngOnInit(): void {
     this.initChart();
@@ -57,7 +60,8 @@ export class LineChartComponent implements OnInit {
       ctx.font = '13px Arial';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText('Sin datos para mostrar', width / 2, height / 2);
+      const noDataText = this.translationService.translate('noData');
+      ctx.fillText(noDataText, width / 2, height / 2);
       return;
     }
 

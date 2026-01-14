@@ -66,7 +66,14 @@
   <!-- Pagination -->
   <div *ngIf="data.length > 0" class="pagination-container">
     <div class="pagination-info" *ngIf="showPaginationInfo">
-      <span>Mostrando {{ (currentPage - 1) * itemsPerPage + 1 }} - {{ Math.min(currentPage * itemsPerPage, data.length) }} de {{ data.length }}</span>
+      <span>
+        {{ 'paginationMostrando' | translate }}
+        {{ (currentPage - 1) * itemsPerPage + 1 }}
+        -
+        {{ Math.min(currentPage * itemsPerPage, data.length) }}
+        {{ 'paginationDe' | translate }}
+        {{ data.length }}
+      </span>
     </div>
     <div class="pagination-controls">
       <button
@@ -74,7 +81,7 @@
         class="pagination-btn"
         (click)="goToPreviousPage()"
         [disabled]="currentPage === 1"
-        title="Página anterior"
+        [title]="'paginationPrevPage' | translate"
       >
         <i class="pi pi-chevron-left"></i>
       </button>
@@ -94,7 +101,7 @@
         class="pagination-btn"
         (click)="goToNextPage()"
         [disabled]="currentPage === totalPages"
-        title="Página siguiente"
+        [title]="'paginationNextPage' | translate"
       >
         <i class="pi pi-chevron-right"></i>
       </button>

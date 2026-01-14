@@ -11,6 +11,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { PagoService, PagoDisplay } from '../../core/services/pago.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { AuthService } from '../../core/services/auth.service';
+import { TranslationService } from '../../core/services/translation.service';
 
 @Component({
   selector: 'app-equipo-tarjetas',
@@ -55,7 +56,8 @@ export class EquipoTarjetasComponent implements OnInit {
     private pagoService: PagoService,
     public notificationService: NotificationService,
     private authService: AuthService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private translationService: TranslationService
   ) {}
 
   ngOnInit(): void {
@@ -104,9 +106,12 @@ export class EquipoTarjetasComponent implements OnInit {
     this.fechaResetTexto = `${dia}/${mesNumero}/${anioNumero}`;
 
     const plural = this.diasHastaReset === 1 ? '' : 's';
-    this.mensajeResetTarjetas =
-      `Aviso: dentro de ${this.diasHastaReset} día${plural} las tarjetas ` +
-      `se restablecerán automáticamente a su saldo máximo (el ${this.fechaResetTexto}).`;
+    let template = this.translationService.translate('tarjetasAvisoResetTemplate');
+    template = template
+      .replace('{dias}', String(this.diasHastaReset))
+      .replace('{plural}', plural)
+      .replace('{fecha}', this.fechaResetTexto);
+    this.mensajeResetTarjetas = template;
   }
 
   private initializeForm(): void {

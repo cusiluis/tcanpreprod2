@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { TranslationService } from '../../../core/services/translation.service';
+import { TranslationKey } from '../../models/translations.model';
 
 export interface ChatMessage {
   id: string;
@@ -12,18 +14,22 @@ export interface ChatMessage {
   providedIn: 'root'
 })
 export class AiChatService {
-  private messagesSubject = new BehaviorSubject<ChatMessage[]>([
-    {
-      id: '1',
-      text: '¡Hola! Soy tu asistente virtual de Terra Canada. Estoy aquí para ayudarte.',
-      sender: 'bot',
-      timestamp: new Date()
-    }
-  ]);
+  private messagesSubject: BehaviorSubject<ChatMessage[]>;
 
-  public messages$ = this.messagesSubject.asObservable();
+  private readonly botResponseKeys: TranslationKey[] = [
+    'aiChatResponse1',
+    'aiChatResponse2',
+    'aiChatResponse3',
+    'aiChatResponse4'
+  ];
 
-  constructor() {}
+  constructor(private translationService: TranslationService) {
+    this.messagesSubject = new BehaviorSubject<ChatMessage[]>([this.createWelcomeMessage()]);
+  }
+
+  public get messages$(): Observable<ChatMessage[]> {
+    return this.messagesSubject.asObservable();
+  }
 
   getMessages(): ChatMessage[] {
     return this.messagesSubject.value;
@@ -49,14 +55,9 @@ export class AiChatService {
   }
 
   private addBotResponse(): void {
-    const responses = [
-      '¿En qué más puedo ayudarte?',
-      'Entendido. ¿Hay algo más que necesites?',
-      'Perfecto. ¿Tienes otra pregunta?',
-      'Claro, estoy aquí para asistirte.'
-    ];
-
-    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+    const randomKey =
+      this.botResponseKeys[Math.floor(Math.random() * this.botResponseKeys.length)];
+    const randomResponse = this.translationService.translate(randomKey);
     const newMessage: ChatMessage = {
       id: Date.now().toString(),
       text: randomResponse,
@@ -69,13 +70,15 @@ export class AiChatService {
   }
 
   clearMessages(): void {
-    this.messagesSubject.next([
-      {
-        id: '1',
-        text: '¡Hola! Soy tu asistente virtual de Terra Canada. Estoy aquí para ayudarte.',
-        sender: 'bot',
-        timestamp: new Date()
-      }
-    ]);
+    this.messagesSubject.next([this.createWelcomeMessage()]);
+  }
+
+  private createWelcomeMessage(): ChatMessage {
+    return {
+      id: '1',
+      text: this.translationService.translate('aiChatWelcome'),
+      sender: 'bot',
+      timestamp: new Date()
+    };
   }
 }

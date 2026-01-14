@@ -12,8 +12,8 @@
 
       <!-- Body -->
       <div class="login-body">
-        <h2 class="login-title">Sistema de Gestión</h2>
-        <p class="login-subtitle">Terra Canada Recursos</p>
+        <h2 class="login-title">{{ 'loginTitulo' | translate }}</h2>
+        <p class="login-subtitle">{{ 'loginSubtitulo' | translate }}</p>
 
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
           <!-- Error Message -->
@@ -24,25 +24,25 @@
 
           <!-- Username Field -->
           <div class="form-group">
-            <label for="username" class="form-label">Usuario</label>
+            <label for="username" class="form-label">{{ 'loginUsuarioLabel' | translate }}</label>
             <input
               id="username"
               type="text"
               formControlName="username"
-              placeholder="Ingrese su usuario"
+              [placeholder]="'loginUsuarioPlaceholder' | translate"
               class="form-input"
             />
           </div>
 
           <!-- Password Field -->
           <div class="form-group">
-            <label for="password" class="form-label">Contraseña</label>
+            <label for="password" class="form-label">{{ 'loginPasswordLabel' | translate }}</label>
             <div class="password-input-wrapper">
               <input
                 id="password"
                 [type]="showPassword ? 'text' : 'password'"
                 formControlName="password"
-                placeholder="Ingrese su contraseña"
+                [placeholder]="'loginPasswordPlaceholder' | translate"
                 class="form-input"
               />
               <button
@@ -62,14 +62,16 @@
             class="login-button"
             [class.loading]="loading">
             <span class="button-icon">→</span>
-            <span class="button-text">{{ loading ? 'Iniciando...' : 'Iniciar Sesión' }}</span>
+            <span class="button-text">
+              {{ loading ? ('loginBotonIniciando' | translate) : ('loginBotonIniciar' | translate) }}
+            </span>
           </button>
         </form>
       </div>
 
       <!-- Footer -->
       <div class="login-footer">
-        <p>Desarrollado por <span class="footer-brand">SALAZAR</span></p>
+        <p>{{ 'loginFooterTexto' | translate }} <span class="footer-brand">SALAZAR</span></p>
       </div>
     </div>
   </div>

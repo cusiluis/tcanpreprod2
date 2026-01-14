@@ -4,7 +4,7 @@
     <div class="toast-content">
       <i class="pi pi-check-circle"></i>
       <div class="toast-text">
-        <h4>¡Éxito!</h4>
+        <h4>{{ 'exito' | translate }}</h4>
         <p>{{ successToastMessage }}</p>
       </div>
     </div>
@@ -14,7 +14,7 @@
     <div class="toast-content">
       <i class="pi pi-exclamation-triangle"></i>
       <div class="toast-text">
-        <h4>Error</h4>
+        <h4>{{ 'error' | translate }}</h4>
         <p>{{ errorToastMessage }}</p>
       </div>
     </div>
@@ -97,11 +97,11 @@
 
       <div class="mini-modal-body">
         <p>
-          ¿Seguro que deseas eliminar el documento
+          {{ 'docsEliminarDocumentoPregunta' | translate }}
           <strong>{{ documentoPendienteEliminar?.nombre }}</strong>?
         </p>
         <p class="mini-modal-warning">
-          Esta acción no se puede deshacer.
+          {{ 'accionNoSePuedeDeshacer' | translate }}
         </p>
 
         <div
@@ -132,7 +132,7 @@
             [ngClass]="deleting ? 'pi-spinner pi-spin' : 'pi-trash'"
           ></i>
           <span>
-            {{ deleting ? 'Eliminando...' : ('eliminar' | translate) }}
+            {{ deleting ? ('docsEliminando' | translate) : ('eliminar' | translate) }}
           </span>
         </button>
       </div>

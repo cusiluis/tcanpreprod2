@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { AnalisisDistribucionEmailEstado } from '../../../../shared/models/analisis.model';
+import { TranslationService } from '../../../../core/services/translation.service';
 
 @Component({
   selector: 'app-pie-chart',
@@ -33,6 +34,8 @@ export class PieChartComponent implements OnInit {
       }
     ]
   };
+
+  constructor(private translationService: TranslationService) {}
 
   ngOnInit(): void {
     this.initChart();
@@ -66,7 +69,8 @@ export class PieChartComponent implements OnInit {
       ctx.font = '13px Arial';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText('Sin datos para mostrar', centerX, centerY);
+      const noDataText = this.translationService.translate('noData');
+      ctx.fillText(noDataText, centerX, centerY);
       return;
     }
 

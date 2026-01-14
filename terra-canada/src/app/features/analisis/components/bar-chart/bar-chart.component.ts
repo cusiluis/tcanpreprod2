@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { AnalisisComparativoMedios } from '../../../../shared/models/analisis.model';
+import { TranslationService } from '../../../../core/services/translation.service';
 
 @Component({
   selector: 'app-bar-chart',
@@ -28,6 +29,8 @@ export class BarChartComponent implements OnInit {
     values: [] as number[],
     colors: [] as string[]
   };
+
+  constructor(private translationService: TranslationService) {}
 
   ngOnInit(): void {
     this.initChart();
@@ -65,7 +68,8 @@ export class BarChartComponent implements OnInit {
       ctx.font = '13px Arial';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText('Sin datos para mostrar', width / 2, height / 2);
+      const noDataText = this.translationService.translate('noData');
+      ctx.fillText(noDataText, width / 2, height / 2);
       return;
     }
 
@@ -138,7 +142,10 @@ export class BarChartComponent implements OnInit {
       return;
     }
 
-    const etiquetas = ['Tarjetas', 'Cuentas bancarias'];
+    const etiquetas = [
+      this.translationService.translate('analisisTarjetasLabel'),
+      this.translationService.translate('analisisCuentasBancariasLabel')
+    ];
     const valores = [
       this._comparativo.total_tarjetas ?? 0,
       this._comparativo.total_cuentas_bancarias ?? 0

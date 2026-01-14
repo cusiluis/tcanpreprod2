@@ -36,7 +36,7 @@
                       appendTo="body"
                       [maxDate]="today"
                       panelStyleClass="tc-calendar-panel"
-                      [placeholder]="'yyyy-mm-dd'"
+                      [placeholder]="'jj/mm/aaaa'"
                       (onFocus)="setFocusedInput('desde', true)"
                       (onBlur)="setFocusedInput('desde', false)"
                       (onHide)="setFocusedInput('desde', false)"
@@ -63,7 +63,7 @@
                       appendTo="body"
                       [maxDate]="today"
                       panelStyleClass="tc-calendar-panel"
-                      [placeholder]="'yyyy-mm-dd'"
+                      [placeholder]="'jj/mm/aaaa'"
                       (onFocus)="setFocusedInput('hasta', true)"
                       (onBlur)="setFocusedInput('hasta', false)"
                       (onHide)="setFocusedInput('hasta', false)"
@@ -83,7 +83,7 @@
                 [ngClass]="{ 'is-active': periodoSeleccionado === 'dia' }"
                 (click)="setPeriodo('dia')"
               >
-                Día
+                {{ 'periodoDia' | translate }}
               </button>
               <button
                 pButton
@@ -92,7 +92,7 @@
                 [ngClass]="{ 'is-active': periodoSeleccionado === 'semana' }"
                 (click)="setPeriodo('semana')"
               >
-                Semana
+                {{ 'periodoSemana' | translate }}
               </button>
               <button
                 pButton
@@ -101,7 +101,7 @@
                 [ngClass]="{ 'is-active': periodoSeleccionado === 'mes' }"
                 (click)="setPeriodo('mes')"
               >
-                Mes
+                {{ 'periodoMes' | translate }}
               </button>
             </div>
             <button
@@ -157,17 +157,17 @@
       <!-- Top Proveedores -->
       <div class="top-proveedores" *ngIf="analisis?.top_proveedores?.length">
         <div class="top-proveedores-header">
-          <h3>Top proveedores con más movimientos</h3>
-          <p class="top-proveedores-subtitle">Proveedores ordenados por monto total acumulado en el rango seleccionado.</p>
+          <h3>{{ 'topProveedoresTitulo' | translate }}</h3>
+          <p class="top-proveedores-subtitle">{{ 'topProveedoresSubtitulo' | translate }}</p>
         </div>
         <div class="top-proveedores-table-wrapper">
           <table class="top-proveedores-table">
             <thead>
               <tr>
                 <th>{{ 'proveedor' | translate }}</th>
-                <th>N° pagos</th>
-                <th>Total acumulado</th>
-                <th>Último pago</th>
+                <th>{{ 'topProveedoresNumeroPagos' | translate }}</th>
+                <th>{{ 'topProveedoresTotalAcumulado' | translate }}</th>
+                <th>{{ 'topProveedoresUltimoPago' | translate }}</th>
               </tr>
             </thead>
             <tbody>

@@ -15,6 +15,7 @@ import {
   DocumentoUsuarioResumen
 } from '../../../../core/services/documentos-usuario.service';
 import { AuthService } from '../../../../core/services/auth.service';
+import { TranslationService } from '../../../../core/services/translation.service';
 
 interface Documento {
   id: number;
@@ -78,7 +79,8 @@ export class DocumentosListComponent implements OnInit, OnChanges {
     private documentosService: DocumentosUsuarioService,
     private authService: AuthService,
     private cdr: ChangeDetectorRef,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private translationService: TranslationService
   ) {
     this.isAdmin = this.authService.isAdmin();
     this.isEquipo = this.authService.isEquipo();
@@ -128,7 +130,8 @@ export class DocumentosListComponent implements OnInit, OnChanges {
             this.modulosDocumentos = [];
             this.filteredModulosDocumentos = [];
             this.errorMessage =
-              (response as any)?.error?.message || 'Error obteniendo documentos';
+              (response as any)?.error?.message ||
+              this.translationService.translate('docsErrorObteniendoDocumentos');
           }
           this.loading = false;
           this.cdr.markForCheck();
@@ -138,9 +141,10 @@ export class DocumentosListComponent implements OnInit, OnChanges {
           this.modulosDocumentos = [];
           this.filteredModulosDocumentos = [];
           this.errorMessage =
-            error?.error?.error?.message || 'Error obteniendo documentos';
+            error?.error?.error?.message ||
+            this.translationService.translate('docsErrorObteniendoDocumentos');
           this.loading = false;
-           this.cdr.markForCheck();
+          this.cdr.markForCheck();
         }
       });
   }
@@ -149,17 +153,17 @@ export class DocumentosListComponent implements OnInit, OnChanges {
     console.log('DocumentosListComponent.mapDocumentos() - data cruda', data);
     const baseModulos: ModuloDocumentos[] = [
       {
-        nombre: 'Tarjetas',
+        nombre: this.translationService.translate('docsModuloTarjetas'),
         modulo: 'equipo-tarjetas',
         documentos: []
       },
       {
-        nombre: 'Financieros - C. Bancaria',
+        nombre: this.translationService.translate('docsModuloFinancierosBancaria'),
         modulo: 'financieros-bancaria',
         documentos: []
       },
       {
-        nombre: 'Financieros - Tarjetas',
+        nombre: this.translationService.translate('docsModuloFinancierosTarjetas'),
         modulo: 'financieros-tarjetas',
         documentos: []
       }
@@ -331,7 +335,9 @@ export class DocumentosListComponent implements OnInit, OnChanges {
           console.error('No se pudo obtener el documento');
           if (action === 'view') {
             this.documentModalLoading = false;
-            this.documentModalError = 'No se pudo obtener el documento';
+            this.documentModalError = this.translationService.translate(
+              'docsNoSePudoObtenerDocumento'
+            );
             this.cdr.markForCheck();
           }
           return;
@@ -374,7 +380,9 @@ export class DocumentosListComponent implements OnInit, OnChanges {
           console.error('Error convirtiendo documento base64:', error);
           if (action === 'view') {
             this.documentModalLoading = false;
-            this.documentModalError = 'Error mostrando el documento';
+            this.documentModalError = this.translationService.translate(
+              'docsErrorMostrandoDocumento'
+            );
             this.cdr.markForCheck();
           }
         }
@@ -385,8 +393,10 @@ export class DocumentosListComponent implements OnInit, OnChanges {
           this.documentModalLoading = false;
           const backendMessage =
             error?.error?.error?.message || error?.error?.message || null;
-          this.documentModalError =
-            backendMessage || 'Error obteniendo el documento';
+          const fallbackMessage = this.translationService.translate(
+            'docsErrorObteniendoDocumento'
+          );
+          this.documentModalError = backendMessage || fallbackMessage;
           this.cdr.markForCheck();
         }
       }
@@ -419,7 +429,7 @@ export class DocumentosListComponent implements OnInit, OnChanges {
     this.cdr.markForCheck();
   }
 
-   confirmDelete(): void {
+  confirmDelete(): void {
     if (!this.documentoPendienteEliminar) {
       return;
     }
@@ -451,7 +461,9 @@ export class DocumentosListComponent implements OnInit, OnChanges {
         // Éxito
         this.confirmDeleteVisible = false;
         this.documentoPendienteEliminar = null;
-        this.successToastMessage = 'Documento eliminado correctamente';
+        this.successToastMessage = this.translationService.translate(
+          'docsDocumentoEliminadoCorrectamente'
+        );
         this.showSuccessToast = true;
         this.cdr.markForCheck();
 
@@ -466,7 +478,10 @@ export class DocumentosListComponent implements OnInit, OnChanges {
         console.error('Error HTTP eliminando documento', error);
         this.deleting = false;
         this.confirmDeleteError = 'Error eliminando documento';
-        this.errorToastMessage = 'Error eliminando documento';
+        const fallbackMessage = this.translationService.translate(
+          'docsErrorEliminandoDocumento'
+        );
+        this.errorToastMessage = fallbackMessage;
         this.showErrorToast = true;
         this.cdr.markForCheck();
         setTimeout(() => {
