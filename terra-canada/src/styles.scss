@@ -393,3 +393,54 @@ html.dark-theme {
     }
   }
 }
+
+/* Global override for PrimeNG datepicker panel (used in Analysis filter)
+  Ensures the popup calendar has a solid background even when appended to body. */
+.tc-calendar-panel {
+  background-color: #ffffff !important;
+  border-radius: 10px;
+  border: 6px solid #d0d7de;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.25);
+
+  /* Espaciado interno del calendario */
+  .p-datepicker-header {
+    padding: 0.75rem 1rem;
+  }
+
+  .p-datepicker-calendar {
+    padding: 0.75rem 1rem 1rem;
+  }
+
+  /* Ds deshabilitados (fechas que no se pueden seleccionar): gris y sin hover marcado */
+  .p-datepicker-calendar tbody > tr > td span.p-disabled,
+  .p-datepicker-calendar tbody > tr > td.p-disabled span {
+    background-color: #f3f4f6;
+    color: #9ca3af;
+    cursor: not-allowed;
+  }
+
+  .p-datepicker-calendar tbody > tr > td span.p-disabled:hover,
+  .p-datepicker-calendar tbody > tr > td.p-disabled span:hover {
+    background-color: #f3f4f6;
+  }
+
+  /* Ds seleccionables: cursor de mano y chips redondeados */
+  .p-datepicker-calendar tbody > tr > td > span:not(.p-disabled) {
+    border-radius: 999px;
+    cursor: pointer;
+  }
+
+  /* Hoy y d seleccionado con estilo acorde al sistema */
+  .p-datepicker-calendar tbody > tr > td.p-datepicker-today > span {
+    border: 1px solid #2d7a7a;
+  }
+
+  .p-datepicker-calendar tbody > tr > td.p-highlight > span {
+    background: #2d7a7a;
+    color: #ffffff;
+  }
+}
+
+.tc-calendar-panel .p-datepicker-header {
+  border-bottom: 1px solid #e0e0e0;
+}

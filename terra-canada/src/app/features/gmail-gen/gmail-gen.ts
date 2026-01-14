@@ -451,6 +451,37 @@ export class GmailGenComponent implements OnInit {
     this.showDetailsModal = false;
   }
 
+  /**
+   * Devuelve el texto de estado traducido para un envío del historial.
+   * No modifica el valor original de `envio.estado`, solo la representación visual.
+   */
+  getEnvioEstadoLabel(estado: string | null | undefined): string {
+    if (!estado) {
+      return '';
+    }
+
+    const normalized = estado.toUpperCase();
+    let key: TranslationKey | null = null;
+
+    switch (normalized) {
+      case 'ENVIADO':
+        key = 'gmailGenEstadoEnviado';
+        break;
+      case 'PENDIENTE':
+        key = 'gmailGenEstadoPendiente';
+        break;
+      case 'ERROR':
+      case 'FALLIDO':
+        key = 'gmailGenEstadoError';
+        break;
+      default:
+        // Si es un estado desconocido, mostramos el valor tal cual para no ocultar información.
+        return estado;
+    }
+
+    return this.t(key);
+  }
+
   private t(key: TranslationKey): string {
     return this.translationService.translate(key);
   }

@@ -426,6 +426,9 @@ export const TRANSLATIONS = {
     gmailGenDefaultSubject: 'Confirmación de pago',
     gmailGenDefaultBody: 'Hola, te envío los pagos que realizamos. Por favor revisa los detalles.',
     gmailGenInfoDefaultMessage: 'Detalles de los pagos enviados.',
+    gmailGenEstadoEnviado: 'ENVIADO',
+    gmailGenEstadoPendiente: 'PENDIENTE',
+    gmailGenEstadoError: 'ERROR',
     // AI Chat
     aiChatTitle: 'Asistente Terra',
     aiChatPlaceholder: 'Escribe tu mensaje...',
@@ -897,6 +900,9 @@ export const TRANSLATIONS = {
     gmailGenDefaultSubject: 'Payment confirmation',
     gmailGenDefaultBody: 'Hello, we are sending you the payments we made. Please review the details.',
     gmailGenInfoDefaultMessage: 'Details of the payments sent.',
+    gmailGenEstadoEnviado: 'SENT',
+    gmailGenEstadoPendiente: 'PENDING',
+    gmailGenEstadoError: 'ERROR',
     // AI Chat
     aiChatTitle: 'Terra Assistant',
     aiChatPlaceholder: 'Type your message...',
@@ -1369,6 +1375,9 @@ export const TRANSLATIONS = {
     gmailGenDefaultSubject: 'Confirmation de paiement',
     gmailGenDefaultBody: 'Bonjour, nous vous envoyons les paiements effectués. Veuillez consulter les détails.',
     gmailGenInfoDefaultMessage: 'Détails des paiements envoyés.',
+    gmailGenEstadoEnviado: 'ENVOYÉ',
+    gmailGenEstadoPendiente: 'EN ATTENTE',
+    gmailGenEstadoError: 'ERREUR',
     // AI Chat
     aiChatTitle: 'Assistant Terra',
     aiChatPlaceholder: 'Écrivez votre message...',

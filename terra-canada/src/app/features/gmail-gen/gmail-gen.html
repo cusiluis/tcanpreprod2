@@ -236,13 +236,13 @@
               </div>
 
               <div class="footer-right footer-right--sent">
-                <span class="sent-label">{{ envio.estado }}</span>
+                <span class="sent-label">{{ getEnvioEstadoLabel(envio.estado) }}</span>
                 <button
                   type="button"
                   class="btn-link"
                   (click)="openEnvioHistorialInfo(envio)"
                 >
-                  Ver detalles
+                  {{ 'gmailGenBtnVerDetalles' | translate }}
                 </button>
               </div>
             </div>
