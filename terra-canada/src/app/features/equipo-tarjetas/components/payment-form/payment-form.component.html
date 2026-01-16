@@ -184,6 +184,45 @@
             {{ 'montoValidoRequerido' | translate }}
           </div>
         </div>
+
+        <!-- Fecha Futura Field (opcional) -->
+        <div class="form-group" *ngIf="form.get('fechaFutura')">
+          <label>Fecha futura (opcional)</label>
+          <div class="date-input-row" [ngClass]="{ 'is-focused': fechaFuturaFocused }">
+            <span class="icon-chip"><i class="pi pi-calendar"></i></span>
+            <div class="input-wrapper">
+              <p-datepicker
+                #cal
+                [showButtonBar]="false"
+                [showTime]="true"
+                hourFormat="24"
+                appendTo="body"
+                panelStyleClass="tc-calendar-panel"
+                inputStyleClass="form-control tc-date-input"
+                [placeholder]="'jj/mm/aaaa hh:mm'"
+                [ngModelOptions]="{ standalone: true }"
+                [(ngModel)]="draftFechaFutura"
+                (ngModelChange)="applyDraftFechaFutura($event)"
+                (onShow)="syncDraftFechaFutura()"
+                (onFocus)="fechaFuturaFocused = true"
+                (onBlur)="fechaFuturaFocused = false"
+                (onHide)="fechaFuturaFocused = false; revertDraftFechaFutura()"
+              >
+                <ng-template pTemplate="footer">
+                  <div class="calendar-footer-actions">
+                    <button type="button" class="btn btn-secondary" (click)="clearDraftFechaFutura()">
+                      Limpiar
+                    </button>
+                    <button type="button" class="btn btn-secondary" (click)="setDraftFechaFuturaToNow()">
+                      Hoy
+                    </button>
+                  </div>
+                </ng-template>
+              </p-datepicker>
+            </div>
+          </div>
+          <small class="form-hint">Si se deja vacío, se usará la fecha actual</small>
+        </div>
       </div>
 
       <!-- N° Presta Field (Manual, Alfanumérico) -->

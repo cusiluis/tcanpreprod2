@@ -93,6 +93,7 @@ export class FinancierosTarjetasComponent implements OnInit {
       moneda: ['', Validators.required],
       tarjeta: ['', Validators.required],
       monto: ['', [Validators.required, Validators.min(0)]],
+      fechaFutura: [''],
       numeroPresta: ['', Validators.required],
       comentarios: ['']
     });
@@ -404,6 +405,7 @@ export class FinancierosTarjetasComponent implements OnInit {
         monto: parseFloat(formValue.monto),
         numero_presta: formValue.numeroPresta,
         comentarios: formValue.comentarios || null,
+        fecha_creacion: formValue.fechaFutura ? new Date(formValue.fechaFutura).toISOString() : undefined,
         registrado_por_usuario_id: usuarioId
       };
 

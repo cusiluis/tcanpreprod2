@@ -9,6 +9,7 @@ import { TarjetaService, Tarjeta as TarjetaAPI } from '../../../../core/services
 import { PagoService } from '../../../../core/services/pago.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { DatePickerModule } from 'primeng/datepicker';
 
 interface ProveedorDisplay {
   id: string;
@@ -27,7 +28,7 @@ interface ClienteDisplay {
 @Component({
   selector: 'app-payment-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslatePipe],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslatePipe, DatePickerModule],
   templateUrl: './payment-form.component.html',
   styleUrl: './payment-form.component.scss'
 })
@@ -112,6 +113,64 @@ export class PaymentFormComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  // ======= Fecha futura - estado temporal y locale =======
+  draftFechaFutura: Date | null = null;
+  esLocale: any = {
+    firstDayOfWeek: 1,
+    dayNames: ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'],
+    dayNamesShort: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
+    dayNamesMin: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+    monthNames: [
+      'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+    ],
+    monthNamesShort: ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'],
+    today: 'Hoy',
+    clear: 'Limpiar'
+  };
+  fechaFuturaFocused = false;
+
+  syncDraftFechaFutura(): void {
+    const val = this.form?.get('fechaFutura')?.value;
+    this.draftFechaFutura = val ? new Date(val) : null;
+  }
+
+  confirmFechaFutura(calendar?: any): void {
+    if (this.draftFechaFutura) {
+      this.form.get('fechaFutura')?.setValue(this.draftFechaFutura);
+    } else {
+      // Si se limpió el draft, limpiar el control
+      this.form.get('fechaFutura')?.setValue(null);
+    }
+    this.form.get('fechaFutura')?.markAsDirty();
+    if (calendar && typeof calendar.hideOverlay === 'function') {
+      calendar.hideOverlay();
+    }
+  }
+
+  clearDraftFechaFutura(): void {
+    this.draftFechaFutura = null;
+    this.form.get('fechaFutura')?.setValue(null);
+    this.form.get('fechaFutura')?.markAsDirty();
+  }
+
+  setDraftFechaFuturaToNow(): void {
+    this.draftFechaFutura = new Date();
+    this.form.get('fechaFutura')?.setValue(this.draftFechaFutura);
+    this.form.get('fechaFutura')?.markAsDirty();
+  }
+
+  revertDraftFechaFutura(): void {
+    const val = this.form?.get('fechaFutura')?.value;
+    this.draftFechaFutura = val ? new Date(val) : null;
+  }
+
+  applyDraftFechaFutura(val: Date | null): void {
+    this.draftFechaFutura = val ? new Date(val) : null;
+    this.form.get('fechaFutura')?.setValue(this.draftFechaFutura);
+    this.form.get('fechaFutura')?.markAsDirty();
   }
 
   private cargarClientesLazy(): void {

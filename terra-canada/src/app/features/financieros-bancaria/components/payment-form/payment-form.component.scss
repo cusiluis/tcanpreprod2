@@ -52,6 +52,92 @@
         }
       }
     }
+
+    /* Footer de calendario: botones Limpiar, Hoy, Confirmar */
+    .calendar-footer-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      padding: 10px 12px;
+      border-top: 1px solid #e0e0e0;
+
+      .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+
+        &.btn-primary {
+          background: #2d7a7a;
+          color: #ffffff;
+
+          &:hover:not(:disabled) {
+            background: #1f5555;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(45, 122, 122, 0.2);
+          }
+        }
+
+        &.btn-secondary {
+          background: #e0e0e0;
+          color: #333333;
+
+          &:hover {
+            background: #d0d0d0;
+            transform: translateY(-2px);
+          }
+        }
+      }
+    }
+
+    /* Input compuesto para fecha futura (icono + input) */
+    .date-input-row {
+      display: flex;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid #d0d7de;
+      background-color: #ffffff;
+      min-width: 0;
+      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.02);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+      &.is-focused {
+        border-color: #2d7a7a;
+        box-shadow: 0 0 0 1px rgba(45, 122, 122, 0.25);
+      }
+
+      .icon-chip {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 6px;
+        color: #2d7a7a;
+        font-size: 14px;
+      }
+
+      .input-wrapper {
+        flex: 1;
+
+        .tc-date-input {
+          width: 100%;
+          border: none;
+          outline: none;
+          font-size: 13px;
+          color: #333333;
+
+          &::placeholder {
+            color: #999999;
+          }
+        }
+      }
+    }
   }
 
   .payment-form {
@@ -587,6 +673,61 @@
 
             &:hover {
               background: #d0d0d0;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /* Overrides para que el recuadro de fecha futura tenga el mismo contorno que Tarjetas
+     (colocadas al final para ganar precedencia sobre .form-control) */
+  .payment-form {
+    .form-group {
+      .date-input-row {
+        display: flex;
+        align-items: center;
+        padding: 6px 10px;
+        border-radius: 6px;
+        border: 1px solid #d0d7de;
+        background-color: #ffffff;
+        min-width: 0;
+        box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.02);
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+        &.is-focused {
+          border-color: #2d7a7a;
+          box-shadow: 0 0 0 1px rgba(45, 122, 122, 0.25);
+        }
+
+        &:focus-within {
+          border-color: #2d7a7a;
+          box-shadow: 0 0 0 1px rgba(45, 122, 122, 0.25);
+        }
+
+        .icon-chip {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-right: 6px;
+          color: #2d7a7a;
+          font-size: 14px;
+        }
+
+        .input-wrapper {
+          flex: 1;
+
+          .tc-date-input {
+            width: 100%;
+            border: none !important;
+            outline: none;
+            box-shadow: none !important;
+            background: transparent;
+            font-size: 13px;
+            color: #333333;
+
+            &::placeholder {
+              color: #999999;
             }
           }
         }

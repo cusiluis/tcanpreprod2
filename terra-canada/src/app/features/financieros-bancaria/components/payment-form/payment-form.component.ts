@@ -2,6 +2,7 @@ import { Component, OnInit, Output, EventEmitter, ChangeDetectionStrategy, Chang
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
+import { DatePickerModule } from 'primeng/datepicker';
 import { PagoBancarioService } from '../../../../core/services/pago-bancario.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { ClienteService, Cliente } from '../../../../core/services/cliente.service';
@@ -25,7 +26,7 @@ export interface TipoMoneda {
 @Component({
   selector: 'app-payment-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslatePipe],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslatePipe, DatePickerModule],
   templateUrl: './payment-form.component.html',
   styleUrl: './payment-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -132,6 +133,7 @@ export class PaymentFormComponent implements OnInit {
       correo: [{ value: '', disabled: true }, Validators.required],
       cuentaBancariaId: ['', Validators.required],
       monto: ['', Validators.required],
+      fechaFutura: [''],
       numeroPresta: ['', Validators.required],
       comentarios: ['']
     });
@@ -150,6 +152,68 @@ export class PaymentFormComponent implements OnInit {
 
     // NO inicializar cuentas filtradas - dejar vacío hasta que se seleccione tipo de moneda
     this.cuentasBancariasFiltradas = [];
+  }
+
+  // ======= Fecha futura - estado temporal y locale (español) =======
+  draftFechaFutura: Date | null = null;
+  esLocale: any = {
+    firstDayOfWeek: 1,
+    dayNames: ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'],
+    dayNamesShort: ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'],
+    dayNamesMin: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+    monthNames: [
+      'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+    ],
+    monthNamesShort: ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'],
+    today: 'Hoy',
+    clear: 'Limpiar'
+  };
+  fechaFuturaFocused = false;
+
+  syncDraftFechaFutura(): void {
+    const val = this.paymentForm?.get('fechaFutura')?.value;
+    this.draftFechaFutura = val ? new Date(val) : null;
+  }
+
+  confirmFechaFutura(calendar?: any): void {
+    if (this.draftFechaFutura) {
+      this.paymentForm.get('fechaFutura')?.setValue(this.draftFechaFutura);
+    } else {
+      this.paymentForm.get('fechaFutura')?.setValue(null);
+    }
+    this.paymentForm.get('fechaFutura')?.markAsDirty();
+    if (calendar && typeof calendar.hideOverlay === 'function') {
+      calendar.hideOverlay();
+    }
+    this.cdr.markForCheck();
+  }
+
+  clearDraftFechaFutura(): void {
+    this.draftFechaFutura = null;
+    this.paymentForm.get('fechaFutura')?.setValue(null);
+    this.paymentForm.get('fechaFutura')?.markAsDirty();
+    this.cdr.markForCheck();
+  }
+
+  setDraftFechaFuturaToNow(): void {
+    this.draftFechaFutura = new Date();
+    this.paymentForm.get('fechaFutura')?.setValue(this.draftFechaFutura);
+    this.paymentForm.get('fechaFutura')?.markAsDirty();
+    this.cdr.markForCheck();
+  }
+
+  revertDraftFechaFutura(): void {
+    const val = this.paymentForm?.get('fechaFutura')?.value;
+    this.draftFechaFutura = val ? new Date(val) : null;
+    this.cdr.markForCheck();
+  }
+
+  applyDraftFechaFutura(val: Date | null): void {
+    this.draftFechaFutura = val ? new Date(val) : null;
+    this.paymentForm.get('fechaFutura')?.setValue(this.draftFechaFutura);
+    this.paymentForm.get('fechaFutura')?.markAsDirty();
+    this.cdr.markForCheck();
   }
 
   /**
@@ -433,12 +497,15 @@ export class PaymentFormComponent implements OnInit {
       cuentaBancariaId: this.paymentForm.get('cuentaBancariaId')?.value,
       monto: this.paymentForm.get('monto')?.value,
       numeroPresta: this.paymentForm.get('numeroPresta')?.value,
-      comentarios: this.paymentForm.get('comentarios')?.value
+      comentarios: this.paymentForm.get('comentarios')?.value,
+      fechaCreacion: this.paymentForm.get('fechaFutura')?.value
+        ? new Date(this.paymentForm.get('fechaFutura')?.value).toISOString()
+        : undefined
     };
 
     console.log('PaymentFormComponent.onSubmitForm() - Enviando datos:', formData);
 
-    this.pagoBancarioService.create(formData).subscribe({
+    this.pagoBancarioService.create(formData as any).subscribe({
       next: (response) => {
         console.log('PaymentFormComponent.onSubmitForm() - Respuesta exitosa:', response);
         this.isSubmitting = false;
