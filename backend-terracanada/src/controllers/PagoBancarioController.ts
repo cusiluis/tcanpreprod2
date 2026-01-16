@@ -20,6 +20,7 @@ export class PagoBancarioController {
         monto,
         numeroPresta,
         comentarios,
+        fechaCreacion,
       } = req.body;
 
       const usuarioId = (req as any).user?.id;
@@ -39,7 +40,8 @@ export class PagoBancarioController {
         cuentaBancariaId,
         monto,
         numeroPresta,
-        comentarios
+        comentarios,
+        fechaCreacion
       );
 
       res.status(result?.status || 201).json(result);

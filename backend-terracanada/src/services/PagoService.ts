@@ -58,7 +58,8 @@ export class PagoService extends BaseService<Pago> {
           :monto,
           :numero_presta,
           :registrado_por_usuario_id,
-          :comentarios
+          :comentarios,
+          :fecha_creacion
         )`,
         {
           replacements: {
@@ -69,7 +70,8 @@ export class PagoService extends BaseService<Pago> {
             monto: data.monto,
             numero_presta: data.numero_presta,
             registrado_por_usuario_id: usuarioId,
-            comentarios: data.comentarios || null
+            comentarios: data.comentarios || null,
+            fecha_creacion: data.fecha_creacion || null
           },
           type: QueryTypes.SELECT
         }

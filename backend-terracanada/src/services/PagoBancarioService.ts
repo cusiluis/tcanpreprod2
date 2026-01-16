@@ -20,7 +20,8 @@ export class PagoBancarioService {
     cuentaBancariaId: number,
     monto: number,
     numeroPresta: string,
-    comentarios?: string
+    comentarios?: string,
+    fechaCreacion?: string | null
   ): Promise<any> {
     try {
       console.log('📊 PagoBancarioService.create() - Parámetros:');
@@ -34,7 +35,7 @@ export class PagoBancarioService {
       console.log(`  comentarios: ${comentarios}`);
 
       const result = await sequelize.query(
-        `SELECT pago_bancario_post(?, ?, ?, ?, ?, ?, ?, ?) as result`,
+        `SELECT pago_bancario_post(?, ?, ?, ?, ?, ?, ?, ?, ?) as result`,
         {
           replacements: [
             usuarioId,
@@ -45,6 +46,7 @@ export class PagoBancarioService {
             monto,
             numeroPresta,
             comentarios || null,
+            fechaCreacion || null,
           ],
           type: QueryTypes.SELECT,
         }
