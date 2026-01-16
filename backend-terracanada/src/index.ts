@@ -14,7 +14,7 @@ const app: Express = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware de seguridad
-app.use(helmet());
+
 app.use(cors({
   origin: process.env.CORS_ORIGIN || 'http://localhost:4200',
   credentials: true
@@ -119,3 +119,4 @@ const startServer = async () => {
 startServer();
 
 export default app;
+
