@@ -16,13 +16,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   console.log('authInterceptor - localStorage disponible:', typeof localStorage !== 'undefined');
   console.log('authInterceptor - Todas las keys en localStorage:', Object.keys(localStorage || {}));
   // Solo añadimos el token a las peticiones internas del backend
-  const url = req.url;
-  const isInternalApi = (
-    url.startsWith('/api/') ||
-    url.startsWith('/api/v1') ||
-    url.includes('://localhost:3000/api/') ||
-    url.includes('://127.0.0.1:3000/api/')
-  );
+  const isInternalApi = req.url.startsWith('https://terra-canada-backend.vamw1k.easypanel.host/api/v1');
 
   let modifiedReq = req;
 
@@ -53,16 +47,14 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       modifiedReq = req.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-          Accept: 'application/json'
+          'Content-Type': 'application/json'
         }
       });
     } else {
       console.warn('authInterceptor - ❌ No hay token disponible, enviando sin autenticación (solo Content-Type)');
       modifiedReq = req.clone({
         setHeaders: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json'
+          'Content-Type': 'application/json'
         }
       });
     }
@@ -72,14 +64,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(modifiedReq).pipe(
     catchError((error: any) => {
-      try {
-        const details = typeof error?.error === 'string' ? error.error : JSON.stringify(error?.error);
-        console.error('authInterceptor - Error HTTP:', error?.status, error?.statusText, 'URL:', error?.url);
-        console.error('authInterceptor - Detalles:', details);
-      } catch {
-        console.error('authInterceptor - Error HTTP:', error?.status, error?.statusText, 'URL:', error?.url);
-        console.error('authInterceptor - Detalles (no-JSON):', error?.error);
-      }
+      console.error('authInterceptor - Error HTTP:', error.status, error.statusText);
+      console.error('authInterceptor - Detalles:', error.error);
 
       if (error.status === 401) {
         const errorCode = (error.error as any)?.error?.code;
