@@ -101,14 +101,16 @@ export class EntidadesClientesComponent implements OnInit, OnDestroy {
       nombre: ['', Validators.required],
       ubicacion: [''],
       telefono: ['', [Validators.pattern(/^[0-9]{6,20}$/)]],
-      correo: ['', [Validators.required, Validators.email]]
+      correo: ['', Validators.email]
+      //correo: ['', [Validators.required, Validators.email]]
     });
 
     this.editForm = this.fb.group({
       nombre: ['', Validators.required],
       ubicacion: [''],
       telefono: ['', [Validators.pattern(/^[0-9]{6,20}$/)]],
-      correo: ['', [Validators.required, Validators.email]]
+      correo: ['', Validators.email]
+      //correo: ['', [Validators.required, Validators.email]]
     });
   }
 
