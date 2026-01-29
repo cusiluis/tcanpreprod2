@@ -248,12 +248,12 @@
           type="text"
           formControlName="numeroPresta"
           class="form-control"
-          placeholder="Ej: BANCO-{{ currentYear }}-001"
+          placeholder="Ej: B{{ currentYear }}001"
           [readonly]="numeroPrestaAutomatico"
         />
         <small class="form-hint" *ngIf="!numeroPrestaAutomatico">Número único proporcionado por el banco</small>
         <small class="form-hint" *ngIf="numeroPrestaAutomatico">
-          {{ 'formatoBanco' | translate }}{{ currentYear }}-ID
+          {{ 'formatoBanco' | translate }}{{ currentYear }}ID
         </small>
         <div class="form-error" *ngIf="paymentForm.get('numeroPresta')?.invalid && paymentForm.get('numeroPresta')?.touched && !numeroPrestaAutomatico">
           {{ 'numeroPrestaRequerido' | translate }}

@@ -584,7 +584,7 @@ export class PaymentFormComponent implements OnInit, OnDestroy {
           }
 
           const year = new Date().getFullYear();
-          const codigo = `TARJE-${year}-${nextId}`;
+          const codigo = `T${year}${nextId}`;
 
           control.setValue(codigo);
           control.markAsDirty();

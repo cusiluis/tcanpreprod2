@@ -460,7 +460,7 @@ export class PaymentFormComponent implements OnInit {
           }
         }
 
-        const codigo = `BANCO-${this.currentYear}-${nextId}`;
+        const codigo = `B${this.currentYear}${nextId}`;
 
         control.setValue(codigo);
         control.markAsDirty();

@@ -265,7 +265,7 @@
           {{ 'numeroUnicoServicio' | translate }}
         </small>
         <small class="form-hint" *ngIf="numeroPrestaAutomatico">
-          {{ 'formatoTarje' | translate }}{{ currentYear }}-ID
+          {{ 'formatoTarje' | translate }}{{ currentYear }}ID
         </small>
         <div class="form-error" *ngIf="form.get('numeroPresta')?.invalid && form.get('numeroPresta')?.touched && !numeroPrestaAutomatico">
           {{ 'numeroPrestaRequerido' | translate }}
